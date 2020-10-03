@@ -25,6 +25,8 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build the 
         run: python build.py
+      - name: Automatic Releases
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
