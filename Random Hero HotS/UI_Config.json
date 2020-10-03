@@ -1,0 +1,45 @@
+{
+    "output_file": "settings.json",
+    "command": {
+        "type": "textbox",
+        "value": "!ramdonhero hots",
+        "label": "Command to trigger script",
+        "tooltip": "Amazing!",
+        "group": "Command"
+    },
+    "tank": {
+        "type": "textbox",
+        "value": "Mei, Mal'Ganis, Blaze, Garrosh, Johanna, Anub'arak, Arthas, Diablo, Muradin, Tyrael, E.T.C, Stitches, Varian",
+        "label": "Comma separated Tank heroes",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "dps": {
+        "type": "textbox",
+        "value": "Orphera, mephisto, Fenix, Hanzo, Junkrat, Kel'Thuzad, Genji, Cassia, Probius, Zul'jin, Gul'dan, Chromie, Tracer, Li-Ming, Greymane, Lunara, Kael'thas, Sylvanas, Nova, Raynor, Sgt. Hammer, Valla, Falstad, Tassadar, Qhira, Maiev, Valeera, Samuro, Alarak, Butcher, Murky, Illidan, Kerrigan, Zeratul, Jaina, Azmodan, Zagara, Tychus, Nazeebo",
+        "label": "Comma separated DPS heroes",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "support": {
+        "type": "textbox",
+        "value": "Anduin, Whitemane, Decjard, Alexstraza, Ana, Stukov, Lucio, Auriel, Rharazim, Lt. Morales, Rehgar, Brightwing, Li Li, Malfurion, Tyrande, Uther, Zarya, Medivh, Vikings, Abathur",
+        "label": "Comma separated Support heroes",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "bruiser": {
+        "type": "textbox",
+        "value": "Deathwing, Imperius, Yrel, Malthael, D.Va, Ragnaros, Dehaka, Xul, Artanis, Rexxar, Leoric, Thrall, Chen, Sonya, Gazlowe",
+        "label": "Comma separated bruiser heroes",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "fav": {
+        "type": "textbox",
+        "value": "",
+        "label": "List of favourite heroes, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    }
+}

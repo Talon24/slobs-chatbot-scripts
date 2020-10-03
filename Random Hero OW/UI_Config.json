@@ -1,0 +1,38 @@
+{
+    "output_file": "settings.json",
+    "command": {
+        "type": "textbox",
+        "value": "!ramdonhero hots",
+        "label": "Command to trigger script",
+        "tooltip": "Amazing!",
+        "group": "Command"
+    },
+    "tank": {
+        "type": "textbox",
+        "value": "D.Va, Orisa, Reinhardt, Roadhog, Sigma, Winston, Wrecking Ball, Zarya",
+        "label": "Tank heroes, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "dps": {
+        "type": "textbox",
+        "value": "Ashe, Bastion, Doomfist, Echo, Genji, Hanzo, Junkrat, McCree, Mei, Pharrah, Reaper, Soldier: 76, Sombra, Symmetra, Torbjörn, Tracer, Widowmaker",
+        "label": "DPS heroes, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "support": {
+        "type": "textbox",
+        "value": "Ana, Baptiste, Brigitte, Lúcio, Mercy, Moira, Zenyetta",
+        "label": "Comma separated Support heroes, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    },
+    "fav": {
+        "type": "textbox",
+        "value": "",
+        "label": "List of favourite heroes, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "Heroes"
+    }
+}
