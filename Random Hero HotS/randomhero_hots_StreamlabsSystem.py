@@ -8,7 +8,7 @@ ScriptName = "Random Hero Selector - HotS"
 Website = "https://github.com/Talon24"
 Description = "Draw a random Hero of the Storm from all or from a certain Role."
 Creator = "Talon24"
-Version = "1.0.0"
+Version = "1.0.1"
 
 # Field:
 # GetParam
@@ -47,7 +47,7 @@ def Execute(data):
     message = data.Message
     words = message.split()
     valid = data.IsChatMessage()
-    if valid and message.startswith(settings.get("command")):
+    if valid and has_command(message):
         # Parent.Log("!randomhero", "Random hero started, input: %s" % message)
         # send_message("You're %s and your message is %s. Is this a chat message? %s. Service: %s." % (username, message, valid, data.Service))
         # send_message("Selector started! words: %s" % str(words))
@@ -91,3 +91,7 @@ def getjson(filename):
 def mychoice(iterable):
     max_ = len(iterable) -1
     return iterable[Parent.GetRandom(0, max_)]
+
+
+def has_command(message):
+    return re.search(r"^{}\b".format(re.escape(settings.get("command"))), message)

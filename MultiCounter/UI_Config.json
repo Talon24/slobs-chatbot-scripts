@@ -1,0 +1,66 @@
+{
+    "output_file": "settings.json",
+    "command": {
+        "type": "textbox",
+        "value": "!counter",
+        "label": "Command to trigger script",
+        "tooltip": "Amazing!",
+        "group": "general"
+    },
+    "admins": {
+        "type": "textbox",
+        "value": "",
+        "label": "List of admins, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "groups"
+    },
+    "mods": {
+        "type": "textbox",
+        "value": "",
+        "label": "List of mods, separated by ', '",
+        "tooltip": "Amazing!",
+        "group": "groups"
+    },
+    "view_trust": {
+        "type": "textbox",
+        "value": "viewer",
+        "label": "Counter view trust",
+        "tooltip": "Trust level required to view a counter. [admin/mod/viewer]",
+        "group": "trust"
+    },
+    "increment_trust": {
+        "type": "textbox",
+        "value": "mod",
+        "label": "Counter increment trust",
+        "tooltip": "Trust level required to increase a counter. [admin/mod/viewer]",
+        "group": "trust"
+    },
+    "decrement_trust": {
+        "type": "textbox",
+        "value": "mod",
+        "label": "Counter decrement trust",
+        "tooltip": "Trust level required to decrease a counter. [admin/mod/viewer]",
+        "group": "trust"
+    },
+    "set_trust": {
+        "type": "textbox",
+        "value": "admin",
+        "label": "Counter set trust",
+        "tooltip": "Trust level required to set a counter. [admin/mod/viewer]",
+        "group": "trust"
+    },
+    "create_trust": {
+        "type": "textbox",
+        "value": "admin",
+        "label": "Counter create trust",
+        "tooltip": "Trust level required to create a new counter. [admin/mod/viewer]",
+        "group": "trust"
+    },
+    "delete_trust": {
+        "type": "textbox",
+        "value": "admin",
+        "label": "Counter delete trust",
+        "tooltip": "Trust level required to remove a new counter. [admin/mod/viewer]",
+        "group": "trust"
+    }
+}
