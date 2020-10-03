@@ -5,7 +5,7 @@ import codecs
 import json
 
 ScriptName = "Random Hero Selector - HotS"
-Website = "https://www.google.de"
+Website = "https://github.com/Talon24"
 Description = "Draw a random Hero of the Storm from all or from a certain Role."
 Creator = "Talon24"
 Version = "1.0.0"
