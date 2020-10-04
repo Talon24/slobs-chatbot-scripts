@@ -15,7 +15,7 @@ Creator = "Talon24"
 Version = "1.0.0"
 
 # Have pylint know the parent variable
-Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
+# Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
 #pylint: enable=invalid-name
 
 
