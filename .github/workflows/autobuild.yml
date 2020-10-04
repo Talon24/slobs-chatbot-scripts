@@ -35,4 +35,4 @@ jobs:
           title: "Release"
           files: |
             LICENSE.txt
-            *.zip
+            build/*.zip
