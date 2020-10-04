@@ -1,0 +1,15 @@
+Fields in the message object passed to Execute():
+GetParam
+GetParamCount
+IsChatMessage
+IsFromDiscord
+IsFromMixer
+IsFromTwitch
+IsFromYoutube
+IsRawData
+IsWhisper
+Message
+RawData
+Service
+User
+UserName
