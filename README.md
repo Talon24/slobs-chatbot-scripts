@@ -15,7 +15,11 @@ The calculator requires the `simpleeval` module to be installed, It can be downl
 Step-by-Step-guide to do so:
 - Navigate to the python installation folder (Check the script settings in your chatbot, you should have specified it as `Python 2.7.13 Directory`).
 - Navigate to the `Scripts` folder
-- Click on the address bar in your explorer, clear it and type in the following command
+- Click on the address bar in your explorer, clear it and type in
+```
+cmd
+```
+- In the window that opened, type in
 ```
 pip.exe install simpleeval
 ```
