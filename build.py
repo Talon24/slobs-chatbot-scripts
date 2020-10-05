@@ -1,7 +1,7 @@
 """Build the projects."""
 
 import os
-import importlib
+import re
 import json
 import zipfile
 import pathlib
@@ -35,8 +35,11 @@ def find_mainfile(folder):
 
 def get_version(file_path):
     """Import the module at file_path, import it and extract its Version."""
-    module_path = ".".join([*file_path.parts[:-1], file_path.stem])
-    version = importlib.import_module(module_path).Version
+    # module_path = ".".join([*file_path.parts[:-1], file_path.stem])
+    # version = importlib.import_module(module_path).Version
+    with open(file_path) as readfile:
+        text = readfile.read()
+    version = re.search(r"""Version = ["'](.+)["']""", text).group(1)
     return version
 
 
