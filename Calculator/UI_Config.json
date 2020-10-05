@@ -1,0 +1,45 @@
+{
+    "output_file": "settings.json",
+    "command": {
+        "type": "textbox",
+        "value": "!calc",
+        "label": "Command to trigger script",
+        "tooltip": "The command that has to be written before the calculation.",
+        "group": "general"
+    },
+    "max_precision": {
+        "type": "slider",
+        "value": 15,
+        "min": 0,
+        "max": 30,
+        "ticks": 1,
+        "label": "Maximum precision",
+        "tooltip": "Precision after the decimal separator with which to round. Also specifies after how many digits scientific notation is triggered. NOTE: If set to more than 15, float rounding issues may occur frequently",
+        "group": "general"
+    },
+    "timeout": {
+        "type": "slider",
+        "value": 1,
+        "min": 0,
+        "max": 30,
+        "ticks": 0.1,
+        "label": "Delay between calls in seconds",
+        "tooltip": "Limits how often the command can be called.",
+        "group": "general"
+    },
+    "max_string_len": {
+        "type": "numberbox",
+        "value": 20,
+        "label": "Maximal length of result if it is a string",
+        "tooltip": "Limit the length of a string result.",
+        "group": "general"
+    },
+    "^-behaviour": {
+        "type": "dropdown",
+        "value": "Bitwise XOR",
+        "label": "Behavious of ^ operator",
+        "items": ["Bitwise XOR", "Power", "Nothing"],
+        "tooltip": "Specify how x^y is to be interpreted. Python default is Bitwise XOR, so 2^4=6, though in common writing the ^ denotes power (2^4=16). When set to Nothing, bot displays a hint for clarification.",
+        "group": "general"
+    }
+}
