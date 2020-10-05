@@ -15,14 +15,17 @@ Creator = "Talon24"
 Version = "1.0.0"
 
 # Have pylint know the parent variable
-# Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
+if False:  # pylint: disable=using-constant-test
+    Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
 #pylint: enable=invalid-name
 
 
 COUNTERFILE = "counters.json"
-TRUST = {"admin": 10,
-         "mod": 5,
-         "viewer": 1}
+TRUST = {"Admin": 10,
+         "Custom Mod": 6,
+         "Mod": 5,
+         "Subscriber": 2,
+         "Viewer": 1}
 
 
 def Init():
@@ -42,17 +45,11 @@ def Execute(data):
     if data.IsChatMessage() and has_command(message):
         log("{} has made a request: {}".format(username, message))
         counters = getcounters()
-        trust = get_trust(username)
+        trust = get_trust(username, data.RawData)
         arguments = message.replace(settings["command"], "", 1).strip().split()
-        if len(arguments) == 0:
-            send_message("Available counters: {}".format(", ".join(counters.keys())))
-        elif len(arguments) == 1:
-            key = arguments[0]
-            if key in counters:
-                send_message("{}: {}".format(key, counters.get(key)))
-            else:
-                send_message("No such counter.")
-        elif len(arguments) >= 2:
+        if len(arguments) < 2:
+            view_counters(counters, arguments, trust)
+        else:
             update_counters(counters, arguments, trust)
             savecounters(counters)
 
@@ -63,15 +60,41 @@ def Tick():
     return
 
 
-def get_trust(username):
+def get_trust(username, rawdata):
     """Look up the trust level for a user."""
+    data_fields = parse_rawdata(rawdata)
     if username in settings["admins"]:
-        trust = TRUST["admin"]
+        trust = TRUST["Admin"]
     elif username in settings["mods"]:
-        trust = TRUST["mod"]
+        trust = TRUST["Custom Mod"]
+    elif data_fields["mod"] == "1":
+        trust = TRUST["Mod"]
+    elif data_fields["subscriber"] == "1":
+        trust = TRUST["Subscriber"]
     else:
-        trust = TRUST["viewer"]
+        trust = TRUST["Viewer"]
     return trust
+
+
+def parse_rawdata(rawdata):
+    """Make a dictionary from the RawData attribute."""
+    out = {}
+    for entry in rawdata.split(";"):
+        key, value = entry.split("=", maxsplit=1)
+        out[key] = value
+    return out
+
+
+def view_counters(counters, arguments, trust):
+    """Non-intrusive counter requests."""
+    if len(arguments) == 0 and trust >= TRUST[settings["list_trust"]]:
+        send_message("Available counters: {}".format(", ".join(counters.keys())))
+    elif len(arguments) == 1:
+        key = arguments[0]
+        if key in counters and trust >= TRUST[settings["view_trust"]]:
+            send_message("{}: {}".format(key, counters.get(key)))
+        else:
+            send_message("No such counter.")
 
 
 def update_counters(counters, arguments, trust):
@@ -110,7 +133,9 @@ def update_counters(counters, arguments, trust):
 
 def send_message(message):
     """Shortcut for twitch message sender."""
-    Parent.SendStreamMessage(message)
+    message = str(message)
+    if len(message) < 510:
+        Parent.SendStreamMessage(message)
 
 
 def log(message):

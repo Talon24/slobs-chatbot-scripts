@@ -22,45 +22,59 @@
         "group": "groups"
     },
     "view_trust": {
-        "type": "textbox",
-        "value": "viewer",
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Mod",
         "label": "Counter view trust",
-        "tooltip": "Trust level required to view a counter. [admin/mod/viewer]",
+        "tooltip": "Trust level required to view a counter.",
+        "group": "trust"
+    },
+    "list_trust": {
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Mod",
+        "label": "Counter list trust",
+        "tooltip": "Trust level required to list all counters.",
         "group": "trust"
     },
     "increment_trust": {
-        "type": "textbox",
-        "value": "mod",
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Mod",
         "label": "Counter increment trust",
-        "tooltip": "Trust level required to increase a counter. [admin/mod/viewer]",
+        "tooltip": "Trust level required to increase a counter.",
         "group": "trust"
     },
     "decrement_trust": {
-        "type": "textbox",
-        "value": "mod",
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Mod",
         "label": "Counter decrement trust",
-        "tooltip": "Trust level required to decrease a counter. [admin/mod/viewer]",
+        "tooltip": "Trust level required to decrease a counter.",
         "group": "trust"
     },
     "set_trust": {
-        "type": "textbox",
-        "value": "admin",
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Admin",
         "label": "Counter set trust",
-        "tooltip": "Trust level required to set a counter. [admin/mod/viewer]",
+        "tooltip": "Trust level required to set a counter.",
         "group": "trust"
     },
     "create_trust": {
-        "type": "textbox",
-        "value": "admin",
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Admin",
         "label": "Counter create trust",
-        "tooltip": "Trust level required to create a new counter. [admin/mod/viewer]",
+        "tooltip": "Trust level required to create a new counter.",
         "group": "trust"
     },
     "delete_trust": {
-        "type": "textbox",
-        "value": "admin",
+        "type": "dropdown",
+        "items": ["Admin", "Mod", "Custom Mod", "Subscriber", "Viewer"],
+        "value": "Admin",
         "label": "Counter delete trust",
-        "tooltip": "Trust level required to remove a new counter. [admin/mod/viewer]",
+        "tooltip": "Trust level required to remove a new counter.",
         "group": "trust"
     }
 }
