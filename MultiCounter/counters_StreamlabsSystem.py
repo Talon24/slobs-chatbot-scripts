@@ -12,7 +12,7 @@ ScriptName = "Multicounter"
 Website = "https://github.com/Talon24"
 Description = "Additional Counters."
 Creator = "Talon24"
-Version = "1.0.0"
+Version = "1.0.1"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
