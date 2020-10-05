@@ -12,7 +12,7 @@ ScriptName = "Multicounter"
 Website = "https://github.com/Talon24"
 Description = "Additional Counters."
 Creator = "Talon24"
-Version = "1.0.1"
+Version = "1.0.2"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -22,8 +22,8 @@ if False:  # pylint: disable=using-constant-test
 
 COUNTERFILE = "counters.json"
 TRUST = {"Admin": 10,
-         "Custom Mod": 6,
          "Mod": 5,
+         "Custom Mod": 4,
          "Subscriber": 2,
          "Viewer": 1}
 

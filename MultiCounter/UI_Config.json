@@ -11,14 +11,14 @@
         "type": "textbox",
         "value": "",
         "label": "List of admins, separated by ', '",
-        "tooltip": "Amazing!",
+        "tooltip": "Highest trust level, the streamer should be listed here.",
         "group": "groups"
     },
     "mods": {
         "type": "textbox",
         "value": "",
-        "label": "List of mods, separated by ', '",
-        "tooltip": "Amazing!",
+        "label": "List of Custom Mods, separated by ', '",
+        "tooltip": "Custom Mods can be manually defined and are less powerful than twitch mods.",
         "group": "groups"
     },
     "view_trust": {
