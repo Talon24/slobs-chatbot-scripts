@@ -24,7 +24,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.0"
+Version = "1.0.1"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
