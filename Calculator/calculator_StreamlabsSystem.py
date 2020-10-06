@@ -13,7 +13,11 @@ import datetime
 import operator
 import fractions
 
-import simpleeval
+try:
+    import simpleeval
+    EVALUATOR = simpleeval.SimpleEval()
+except ImportError:
+    simpleeval = ImportError
 
 #pylint: disable=invalid-name
 ScriptName = "Calculator"
@@ -26,9 +30,6 @@ Version = "1.0.0"
 if False:  # pylint: disable=using-constant-test
     Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
 #pylint: enable=invalid-name
-
-
-EVALUATOR = simpleeval.SimpleEval()
 
 
 class AmbiguouityError(Exception):
@@ -46,6 +47,9 @@ def Init():
     #pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = get_json("settings.json")
+    if simpleeval == ImportError:
+        log("Simlpeeval not installed. Install it via settings!")
+        return
     settings["last_call"] = 0
     if settings["^-behaviour"] == "Bitwise XOR":
         EVALUATOR.operators[ast.BitXor] = operator.xor
@@ -201,3 +205,36 @@ def has_command(message):
 def strip_command(message):
     """Retrieve message content without the command."""
     return message.replace(settings.get("command"), "").strip()
+
+
+def install_simpleeval():
+    """Execute getpip and then use it to install simpleeval.
+
+    Subprocess uses module that is only on linux, so fallback to os.
+    """
+
+    # Build paths
+    pippath = os.path.join(os.path.dirname(__file__), "getpip.py")
+    python_path = settings["pythondir"]
+    if not python_path:
+        raise ValueError("Python path is not specified!")
+    python_path = python_path.rstrip("Lib")
+    sep = os.path.sep
+    python_path += sep if not python_path.endswith(sep) else ""
+    python_path += "python.exe"
+
+    # Check if pip is in installation or has to be installed
+    try:
+        import pip  # pylint: disable=import-outside-toplevel, unused-import
+        log("Pip is installed.")
+    except ImportError:
+        req = Parent.GetRequest("https://bootstrap.pypa.io/get-pip.py", {})
+        getpip = json.loads(req)["response"]
+        with open(pippath, "w") as file:
+            file.write(getpip)
+        output = os.system(" ".join([python_path, pippath]))
+        log("getpip output: {}".format(not bool(output)))
+        log("call: {}".format(" ".join([python_path, "-m", "pip", "install", "simpleeval"])))
+    # Call pip to install simpleeval
+    output = os.system(" ".join([python_path, "-m", "pip", "install", "simpleeval"]))
+    log("simpleeval install output: {}".format(not bool(output)))
