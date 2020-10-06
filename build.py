@@ -60,7 +60,8 @@ def zip_basic_settings(folder, myzip):
         return  # No GUI, so no settings required
     settings_name = folder / data["output_file"]
     del data["output_file"]
-    outdata = {key: value["value"] for key, value in data.items()}
+    # "value" is not in button-fields
+    outdata = {key: value["value"] for key, value in data.items() if "value" in value}
     settings = json.dumps(outdata, indent=4)
     myzip.writestr(str(settings_name), settings)
     print("File {} added to {}".format(settings_name.name, myzip.filename))
