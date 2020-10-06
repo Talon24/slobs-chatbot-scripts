@@ -41,5 +41,20 @@
         "items": ["Bitwise XOR", "Power", "Nothing"],
         "tooltip": "Specify how x^y is to be interpreted. Python default is Bitwise XOR, so 2^4=6, though in common writing the ^ denotes power (2^4=16). When set to Nothing, bot displays a hint for clarification.",
         "group": "general"
+    },
+    "pipinstall": {
+        "type": "button",
+        "label": "Install simpleeval",
+        "function": "install_simpleeval",
+        "wsevent": "",
+        "tooltip": "Install the package installer and use it to install simpleeval. NOTE: This launches terminals. If it does not, check the debug pane.",
+        "group": "maintenance"
+    },
+    "pythondir": {
+        "type": "textbox",
+        "value": "",
+        "label": "Phython directory (Copy this from settings)",
+        "tooltip": "The directory for python It is required if simpleeval is to be installed via the button.",
+        "group": "maintenance"
     }
 }
