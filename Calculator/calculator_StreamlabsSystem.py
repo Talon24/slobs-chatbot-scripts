@@ -24,7 +24,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.1"
+Version = "1.0.2"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -218,10 +218,11 @@ def install_simpleeval():
     python_path = settings["pythondir"]
     if not python_path:
         raise ValueError("Python path is not specified!")
-    python_path = python_path.rstrip("Lib")
-    sep = os.path.sep
-    python_path += sep if not python_path.endswith(sep) else ""
-    python_path += "python.exe"
+    if not python_path.endswith("python.exe"):
+        python_path = removesuffix(python_path, "Lib")  # If copypasted
+        sep = os.path.sep
+        python_path += sep if not python_path.endswith(sep) else ""
+        python_path += "python.exe"
 
     # Check if pip is in installation or has to be installed
     try:
@@ -238,3 +239,11 @@ def install_simpleeval():
     # Call pip to install simpleeval
     output = os.system(" ".join([python_path, "-m", "pip", "install", "simpleeval"]))
     log("simpleeval install output: {}".format(not bool(output)))
+
+
+def removesuffix(string_, suffix):
+    """As i ran into https://www.python.org/dev/peps/pep-0616/ ."""
+    if suffix and string_.endswith(suffix):
+        return string_[:-len(suffix)]
+    else:
+        return string_
