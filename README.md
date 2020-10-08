@@ -10,19 +10,11 @@ Some additional functions from the math module are added, as well as decimals an
 The handling of the `^`-operator can be configured.
 
 ### Requirement
-The calculator requires the `simpleeval` module to be installed, It can be downloaded via `pip`.
-
-Step-by-Step-guide to do so:
-- Navigate to the python installation folder (Check the script settings in your chatbot, you should have specified it as `Python 2.7.13 Directory`).
-- Navigate to the `Scripts` folder
-- Click on the address bar in your explorer, clear it and type in
-```
-cmd
-```
-- In the window that opened, type in
-```
-pip.exe install simpleeval
-```
+The calculator requires the `simpleeval` module to be installed. This can be done
+via the Script settings. The python path must be specified within the Maintenance
+tab in order for this to work. Simply copy it from the general settings for scripts.
+You can simply copypaste the path that ends with `Lib`. Then hit the
+`Install simpleeval` button.
 
 ## Multicounter
 Create different individual counters.
