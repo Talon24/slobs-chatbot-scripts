@@ -54,7 +54,7 @@ def zip_content(folder, myzip):
 def zip_basic_settings(folder, myzip):
     """Create initial settings.json file."""
     try:
-        with open(folder / "UI_Config.json") as readfile:
+        with open(folder / "UI_Config.json", encoding="utf-8-sig") as readfile:
             data = json.load(readfile)
     except FileNotFoundError:
         return  # No GUI, so no settings required
@@ -62,7 +62,7 @@ def zip_basic_settings(folder, myzip):
     del data["output_file"]
     # "value" is not in button-fields
     outdata = {key: value["value"] for key, value in data.items() if "value" in value}
-    settings = json.dumps(outdata, indent=4)
+    settings = json.dumps(outdata, indent=4, ensure_ascii=False)
     myzip.writestr(str(settings_name), settings)
     print("File {} added to {}".format(settings_name.name, myzip.filename))
 
