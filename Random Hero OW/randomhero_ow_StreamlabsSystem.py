@@ -38,7 +38,7 @@ def Execute(data):
     # pylint: disable=invalid-name
     message = data.Message
     if data.IsChatMessage() and has_command(message):
-        selection = strip_command(message)
+        selection = strip_command(message).lower()
         if not selection:
             all_heroes = settings["tank"] + settings["support"] + settings["dps"]
             send_message(mychoice(all_heroes))
