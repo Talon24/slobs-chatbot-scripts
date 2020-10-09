@@ -12,7 +12,7 @@ ScriptName = "Multicounter"
 Website = "https://github.com/Talon24"
 Description = "Additional Counters."
 Creator = "Talon24"
-Version = "1.0.2"
+Version = "1.0.3"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -46,7 +46,7 @@ def Execute(data):
         log("{} has made a request: {}".format(username, message))
         counters = getcounters()
         trust = get_trust(username, data.RawData)
-        arguments = message.replace(settings["command"], "", 1).strip().split()
+        arguments = strip_command(message).split()
         if len(arguments) < 2:
             view_counters(counters, arguments, trust)
         else:
@@ -184,3 +184,8 @@ def save_json(dictionary, filename):
 def has_command(message):
     """Check if the message begins with a command as its own word."""
     return re.search(r"^{}\b".format(re.escape(settings.get("command"))), message)
+
+
+def strip_command(message):
+    """Retrieve message content without the command."""
+    return message.replace(settings.get("command"), "", 1).strip()

@@ -204,7 +204,7 @@ def has_command(message):
 
 def strip_command(message):
     """Retrieve message content without the command."""
-    return message.replace(settings.get("command"), "").strip()
+    return message.replace(settings.get("command"), "", 1).strip()
 
 
 def install_simpleeval():

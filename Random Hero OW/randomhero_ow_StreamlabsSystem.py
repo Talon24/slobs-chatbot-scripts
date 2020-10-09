@@ -14,10 +14,11 @@ ScriptName = "Random Hero Selector - Overwatch"
 Website = "https://github.com/Talon24"
 Description = "Draw a random Overwatch hero from all or from a certain Role."
 Creator = "Talon24"
-Version = "1.0.2"
+Version = "1.0.3"
 
 # Have pylint know the parent variable
-# Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
+if False:  # pylint: disable=using-constant-test
+    Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
 #pylint: enable=invalid-name
 
 
@@ -30,31 +31,30 @@ def Init():
     settings["support"] = settings["support"].split(", ")
     settings["tank"] = settings["tank"].split(", ")
     settings["fav"] = settings["fav"].split(", ")
-    # send_message(str(settings))
 
 
 def Execute(data):
     """Executed on every message received. Named by API."""
     #pylint: disable=invalid-name
-    # username = data.UserName
     message = data.Message
-    valid = data.IsChatMessage()
-    if valid and has_command(message):
-        if message.strip() == settings["command"]:
+    if data.IsChatMessage() and has_command(message):
+        selection = strip_command(message)
+        if not selection:
             all_heroes = settings["tank"] + settings["support"] + settings["dps"]
             send_message(mychoice(all_heroes))
+            return
+        if selection in ("tank", "t"):
+            key = "tank"
+        elif selection in ("dps", "damage", "d"):
+            key = "dps"
+        elif selection in ("sup", "support", "s"):
+            key = "support"
+        elif selection in ("fav",) and settings["fav"]:
+            key = "fav"
         else:
-            selection = message.replace(settings["command"], "", 1).strip()
-            if selection in ("tank",):
-                send_message(mychoice(settings["tank"]))
-            elif selection in ("dps", "damage"):
-                send_message(mychoice(settings["dps"]))
-            elif selection in ("sup", "support"):
-                send_message(mychoice(settings["support"]))
-            elif selection in ("fav",) and settings["fav"]:
-                send_message(mychoice(settings["fav"]))
-            else:
-                send_message("Not a valid selection! Please choose tank, dps or support")
+            send_message("Not a valid selection! Please choose tank, dps or support")
+            return
+        send_message(mychoice(settings[key]))
 
 
 def Tick():
@@ -65,7 +65,9 @@ def Tick():
 
 def send_message(message):
     """Shortcut for twitch message sender."""
-    Parent.SendStreamMessage(message)
+    message = str(message)
+    if len(message) < 510:
+        Parent.SendStreamMessage(message)
 
 
 def log(message):
@@ -84,10 +86,17 @@ def getjson(filename):
 
 def mychoice(iterable):
     """Alternative to random.choice, in case Parent's random is different."""
-    max_ = len(iterable) -1
+    max_ = len(iterable)
+    if max_ == 0:
+        raise IndexError("Cannot select from empty list.")
     return iterable[Parent.GetRandom(0, max_)]
 
 
 def has_command(message):
     """Check if the message begins with a command as its own word."""
     return re.search(r"^{}\b".format(re.escape(settings.get("command"))), message)
+
+
+def strip_command(message):
+    """Retrieve message content without the command."""
+    return message.replace(settings.get("command"), "", 1).strip()
