@@ -6,7 +6,6 @@ import re
 import ast
 import json
 import math
-import time
 import codecs
 import decimal
 import datetime
@@ -76,10 +75,10 @@ def Execute(data):
     message = data.Message
     if data.IsChatMessage() and has_command(message):
         calculation = strip_command(message)
-        now = time.time()
-        if not calculation or settings["last_call"] > now - settings["timeout"]:
+        log(on_cooldown(username))
+        if on_cooldown(username):
             return
-        settings["last_call"] = now
+        set_cooldown(username)
         log("{} asked for calculation: {}".format(username, calculation))
         # Pretty spacing in the calculation
         pretty_calc = re.sub(r" *(\(\)) *", r"\1", calculation)
@@ -245,3 +244,13 @@ def removesuffix(string_, suffix):
         return string_[:-len(suffix)]
     else:
         return string_
+
+
+def on_cooldown(user):
+    """Shortcut: Get remaining cooldown of a user."""
+    return Parent.GetUserCooldownDuration(ScriptName, settings["command"], user)
+
+
+def set_cooldown(user):
+    """Shortcut: Set the cooldown of a user."""
+    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["cooldown"]))

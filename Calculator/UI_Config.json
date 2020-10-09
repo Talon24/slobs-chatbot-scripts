@@ -17,12 +17,12 @@
         "tooltip": "Precision after the decimal separator with which to round. Also specifies after how many digits scientific notation is triggered. NOTE: If set to more than 15, float rounding issues may occur frequently",
         "group": "General"
     },
-    "timeout": {
+    "cooldown": {
         "type": "slider",
         "value": 1,
         "min": 0,
         "max": 30,
-        "ticks": 0.1,
+        "ticks": 1,
         "label": "Delay between calls in seconds",
         "tooltip": "Limits how often the command can be called.",
         "group": "General"
