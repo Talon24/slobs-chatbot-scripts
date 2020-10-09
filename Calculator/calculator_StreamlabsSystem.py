@@ -217,14 +217,8 @@ def install_simpleeval():
 
     # Build paths
     pippath = os.path.join(os.path.dirname(__file__), "getpip.py")
-    python_path = settings["pythondir"]
-    if not python_path:
-        raise ValueError("Python path is not specified!")
-    if not python_path.endswith("python.exe"):
-        python_path = removesuffix(python_path, "Lib")  # If copypasted
-        sep = os.path.sep
-        python_path += sep if not python_path.endswith(sep) else ""
-        python_path += "python.exe"
+    os_path = os.__file__
+    python_path = os_path.replace(os.path.join("Lib", "os.py"), "python.exe")
 
     # Check if pip is in installation or has to be installed
     try:
