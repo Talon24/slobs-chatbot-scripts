@@ -16,7 +16,7 @@
     },
     "dps": {
         "type": "textbox",
-        "value": "Orphera, mephisto, Fenix, Hanzo, Junkrat, Kel'Thuzad, Genji, Cassia, Probius, Zul'jin, Gul'dan, Chromie, Tracer, Li-Ming, Greymane, Lunara, Kael'thas, Sylvanas, Nova, Raynor, Sgt. Hammer, Valla, Falstad, Tassadar, Qhira, Maiev, Valeera, Samuro, Alarak, Butcher, Murky, Illidan, Kerrigan, Zeratul, Jaina, Azmodan, Zagara, Tychus, Nazeebo",
+        "value": "Orphera, Mephisto, Fenix, Hanzo, Junkrat, Kel'Thuzad, Genji, Cassia, Probius, Zul'jin, Gul'dan, Chromie, Tracer, Li-Ming, Greymane, Lunara, Kael'thas, Sylvanas, Nova, Raynor, Sgt. Hammer, Valla, Falstad, Tassadar, Qhira, Maiev, Valeera, Samuro, Alarak, Butcher, Murky, Illidan, Kerrigan, Zeratul, Jaina, Azmodan, Zagara, Tychus, Nazeebo",
         "label": "Comma separated DPS heroes",
         "tooltip": "Amazing!",
         "group": "Heroes"
