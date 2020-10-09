@@ -75,7 +75,6 @@ def Execute(data):
     message = data.Message
     if data.IsChatMessage() and has_command(message):
         calculation = strip_command(message)
-        log(on_cooldown(username))
         if on_cooldown(username):
             return
         set_cooldown(username)
@@ -112,6 +111,12 @@ def Tick():
     """Executed in a time interval. Named by API."""
     # pylint: disable=invalid-name
     return
+
+
+def ReloadSettings(_jsonData):
+    """Called when "Save Settings" in UI is clicked."""
+    # pylint: disable=invalid-name
+    Init()
 
 
 def format_result(result):
@@ -253,4 +258,4 @@ def on_cooldown(user):
 
 def set_cooldown(user):
     """Shortcut: Set the cooldown of a user."""
-    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["cooldown"]))
+    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["timeout"]))

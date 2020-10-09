@@ -60,6 +60,12 @@ def Tick():
     return
 
 
+def ReloadSettings(_jsonData):
+    """Called when "Save Settings" in UI is clicked."""
+    # pylint: disable=invalid-name
+    Init()
+
+
 def get_trust(username, rawdata):
     """Look up the trust level for a user."""
     data_fields = parse_rawdata(rawdata)

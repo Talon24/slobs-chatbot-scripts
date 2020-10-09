@@ -68,6 +68,12 @@ def Tick():
     return
 
 
+def ReloadSettings(_jsonData):
+    """Called when "Save Settings" in UI is clicked."""
+    # pylint: disable=invalid-name
+    Init()
+
+
 def send_message(message):
     """Shortcut for twitch message sender."""
     message = str(message)

@@ -54,7 +54,7 @@
         "type": "textbox",
         "value": "",
         "label": "Phython directory (Copy this from settings)",
-        "tooltip": "The directory for python It is required if simpleeval is to be installed via the button.",
+        "tooltip": "The directory for python It is required if simpleeval is to be installed via the button. NOTE: Hit 'Save Settings' before 'Install Simpleeval' if you changed this.",
         "group": "Maintenance"
     }
 }
