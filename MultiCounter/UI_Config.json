@@ -5,21 +5,21 @@
         "value": "!counter",
         "label": "Command to trigger script",
         "tooltip": "Amazing!",
-        "group": "general"
+        "group": "General"
     },
     "admins": {
         "type": "textbox",
         "value": "",
         "label": "List of admins, separated by ', '",
         "tooltip": "Highest trust level, the streamer should be listed here.",
-        "group": "groups"
+        "group": "Groups"
     },
     "mods": {
         "type": "textbox",
         "value": "",
         "label": "List of Custom Mods, separated by ', '",
         "tooltip": "Custom Mods can be manually defined and are less powerful than twitch mods.",
-        "group": "groups"
+        "group": "Groups"
     },
     "view_trust": {
         "type": "dropdown",
@@ -27,7 +27,7 @@
         "value": "Mod",
         "label": "Counter view trust",
         "tooltip": "Trust level required to view a counter.",
-        "group": "trust"
+        "group": "Trust"
     },
     "list_trust": {
         "type": "dropdown",
@@ -35,7 +35,7 @@
         "value": "Mod",
         "label": "Counter list trust",
         "tooltip": "Trust level required to list all counters.",
-        "group": "trust"
+        "group": "Trust"
     },
     "increment_trust": {
         "type": "dropdown",
@@ -43,7 +43,7 @@
         "value": "Mod",
         "label": "Counter increment trust",
         "tooltip": "Trust level required to increase a counter.",
-        "group": "trust"
+        "group": "Trust"
     },
     "decrement_trust": {
         "type": "dropdown",
@@ -51,7 +51,7 @@
         "value": "Mod",
         "label": "Counter decrement trust",
         "tooltip": "Trust level required to decrease a counter.",
-        "group": "trust"
+        "group": "Trust"
     },
     "set_trust": {
         "type": "dropdown",
@@ -59,7 +59,7 @@
         "value": "Admin",
         "label": "Counter set trust",
         "tooltip": "Trust level required to set a counter.",
-        "group": "trust"
+        "group": "Trust"
     },
     "create_trust": {
         "type": "dropdown",
@@ -67,7 +67,7 @@
         "value": "Admin",
         "label": "Counter create trust",
         "tooltip": "Trust level required to create a new counter.",
-        "group": "trust"
+        "group": "Trust"
     },
     "delete_trust": {
         "type": "dropdown",
@@ -75,6 +75,6 @@
         "value": "Admin",
         "label": "Counter delete trust",
         "tooltip": "Trust level required to remove a new counter.",
-        "group": "trust"
+        "group": "Trust"
     }
 }

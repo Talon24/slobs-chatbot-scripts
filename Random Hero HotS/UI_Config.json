@@ -5,7 +5,7 @@
         "value": "!ramdonhero hots",
         "label": "Command to trigger script",
         "tooltip": "Amazing!",
-        "group": "Command"
+        "group": "General"
     },
     "tank": {
         "type": "textbox",
