@@ -1,7 +1,7 @@
 """Script for the streamlabs chatbot to select a random HotS hero.
 
 It can select from all heroes, from a specific class or from favourites."""
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 
 import os
 import re
@@ -10,7 +10,7 @@ import codecs
 import datetime
 
 
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 ScriptName = "Random Hero Selector - HotS"
 Website = "https://github.com/Talon24"
 Description = "Draw a random Hero of the Storm from all or from a certain Role."
@@ -20,12 +20,12 @@ Version = "1.0.2"
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
     Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
-#pylint: enable=invalid-name
+# pylint: enable=invalid-name
 
 
 def Init():
     """Called on start of bot. Named by API."""
-    #pylint: disable=invalid-name, global-variable-undefined
+    # pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = getjson("settings.json")
     settings["dps"] = settings["dps"].split(", ")
@@ -37,7 +37,7 @@ def Init():
 
 def Execute(data):
     """Executed on every message received. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     message = data.Message
     if data.IsChatMessage() and has_command(message):
         selection = strip_command(message)
@@ -64,7 +64,7 @@ def Execute(data):
 
 def Tick():
     """Executed in a time interval. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     return
 
 

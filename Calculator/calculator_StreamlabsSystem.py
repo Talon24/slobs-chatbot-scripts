@@ -1,5 +1,5 @@
 """Chatbot script"""
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 
 import os
 import re
@@ -19,7 +19,7 @@ try:
 except ImportError:
     simpleeval = ImportError
 
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
@@ -29,22 +29,12 @@ Version = "1.0.2"
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
     Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
-#pylint: enable=invalid-name
-
-
-class AmbiguouityError(Exception):
-    """Raised if Operation is defines as nothing."""
-
-
-def no_power(*_):
-    """^ is ambiguous and settings set to discard it."""
-    raise AmbiguouityError("The ^ is ambiguous. Use the ** operator for "
-                           "power and xor() for bitwise xor.")
+# pylint: enable=invalid-name
 
 
 def Init():
     """Called on start of bot. Named by API."""
-    #pylint: disable=invalid-name, global-variable-undefined
+    # pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = get_json("settings.json")
     if simpleeval == ImportError:
@@ -81,7 +71,7 @@ def Init():
 
 def Execute(data):
     """Executed on every message received. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
     if data.IsChatMessage() and has_command(message):
@@ -106,7 +96,7 @@ def Execute(data):
         except simpleeval.NumberTooHigh:
             send_message("Number too large to calculate!")
             return
-        #pylint: disable=broad-except
+        # pylint: disable=broad-except
         except Exception as exc:
             send_message(exc)
             return
@@ -117,6 +107,12 @@ def Execute(data):
                 return
         reply = "{} = {}".format(pretty_calc, result)
         send_message(reply)
+
+
+def Tick():
+    """Executed in a time interval. Named by API."""
+    # pylint: disable=invalid-name
+    return
 
 
 def format_result(result):
@@ -160,11 +156,14 @@ def ndecimal(number):
         return normalized
 
 
-def Tick():
-    """Executed in a time interval. Named by API."""
-    #pylint: disable=invalid-name
-    return
+class AmbiguouityError(Exception):
+    """Raised if Operation is defines as nothing."""
 
+
+def no_power(*_):
+    """^ is ambiguous and settings set to discard it."""
+    raise AmbiguouityError("The ^ is ambiguous. Use the ** operator for "
+                           "power and xor() for bitwise xor.")
 
 
 def safe_lshift(self, other):
@@ -184,7 +183,6 @@ def send_message(message):
 
 def log(message):
     """Shortcut for logging."""
-    # Parent.Log("Counter-script", message)
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     Parent.Log(ScriptName, "[{}] {}".format(now, message))
 

@@ -1,5 +1,5 @@
 """Chatbot script"""
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 
 import os
 import re
@@ -7,7 +7,7 @@ import json
 import datetime
 import codecs
 
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 ScriptName = "Multicounter"
 Website = "https://github.com/Talon24"
 Description = "Additional Counters."
@@ -17,7 +17,7 @@ Version = "1.0.3"
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
     Parent = Parent  # pylint:disable=undefined-variable, self-assigning-variable
-#pylint: enable=invalid-name
+# pylint: enable=invalid-name
 
 
 COUNTERFILE = "counters.json"
@@ -30,7 +30,7 @@ TRUST = {"Admin": 10,
 
 def Init():
     """Called on start of bot. Named by API."""
-    #pylint: disable=invalid-name, global-variable-undefined
+    # pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = get_json("settings.json")
     settings["admins"] = settings["admins"].split(", ")
@@ -39,7 +39,7 @@ def Init():
 
 def Execute(data):
     """Executed on every message received. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
     if data.IsChatMessage() and has_command(message):
@@ -56,7 +56,7 @@ def Execute(data):
 
 def Tick():
     """Executed in a time interval. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     return
 
 
@@ -140,7 +140,6 @@ def send_message(message):
 
 def log(message):
     """Shortcut for logging."""
-    # Parent.Log("Counter-script", message)
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     Parent.Log(ScriptName, "[{}] {}".format(now, message))
 
