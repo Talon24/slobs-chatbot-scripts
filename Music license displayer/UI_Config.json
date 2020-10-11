@@ -1,0 +1,39 @@
+{
+    "output_file": "settings.json",
+    "player": {
+        "type": "dropdown",
+        "value": "Winamp",
+        "label": "Used music player",
+        "items": ["Winamp", "Foobar"],
+        "tooltip": "Used music player",
+        "group": "General"
+    },
+    "license_file": {
+        "type": "textbox",
+        "value": "",
+        "label": "Path to license file",
+        "tooltip": "Write the full path to the file containing the licenses in the incompetech specified format",
+        "group": "General"
+    },
+    "out_file": {
+        "type": "textbox",
+        "value": "",
+        "label": "Path to output file",
+        "tooltip": "Path to the File that streamlabs read and is put in as overlay.",
+        "group": "General"
+    },
+    "verbose": {
+       "type": "checkbox",
+       "value": false,
+       "label": "Write status in log",
+       "tooltip": "Check if you want messages like 'Now playing X' or 'paused or stopped' appear in the log.",
+       "group": "General"
+    },
+    "foobar_title": {
+        "type": "textbox",
+        "value": "[%album artist% - ]['['%album%[ CD%discnumber%][ #%tracknumber%]']' ]%title%[ '//' %track artist%]",
+        "label": "Title format string",
+        "tooltip": "Format string defined in Foobar to parse the title. Available under `File` -> `Preferences` -> `Display` -> `Default User Interface`. Won't work with functions (yet).",
+        "group": "Foobar"
+    }
+}
