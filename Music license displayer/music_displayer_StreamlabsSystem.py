@@ -18,7 +18,7 @@ ScriptName = "Music License Displayer"
 Website = "https://github.com/Talon24"
 Description = "Edits a file with the license of a currently played incompetech music file."
 Creator = "Talon24"
-Version = "0.9.0"
+Version = "0.9.1"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -53,10 +53,17 @@ def ReloadSettings(_jsonData):
     Init()
 
 
-def Execute(_data):
+def Execute(data):
     """Executed on every message received. Named by API."""
     #pylint: disable=invalid-name
-    return
+    username = data.UserName
+    message = data.Message
+    if data.IsChatMessage() and has_command(message) and settings["ask_song_enabled"]:
+        author, title, status = PLAYER.song_attributes()
+        log("{} requested current song".format(username))
+        if status not in ["Stopped", "Paused"] and PLAYER.window_title is not None:
+            send_message(settings["message_template"].format(title=title, author=author))
+
 
 
 def Tick():
@@ -67,6 +74,8 @@ def Tick():
     if datetime.datetime.now() - settings["last_tick"] >= datetime.timedelta(seconds=1):
         settings["last_tick"] = datetime.datetime.now()
         PLAYER.refresh()
+        if not settings["license_watching_enabled"]:
+            return
         if PLAYER.changed():
             author, title, status = PLAYER.song_attributes()
             text = ""
@@ -297,3 +306,15 @@ def log(message):
     # Parent.Log("Counter-script", message)
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     Parent.Log(ScriptName, "[{}] {}".format(now, message))
+
+
+def send_message(message):
+    """Shortcut for twitch message sender."""
+    message = str(message)
+    if len(message) < 510:
+        Parent.SendStreamMessage(message)
+
+
+def has_command(message):
+    """Check if the message begins with a command as its own word."""
+    return re.search(r"^{}\b".format(re.escape(settings.get("command"))), message)

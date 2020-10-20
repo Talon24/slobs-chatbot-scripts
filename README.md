@@ -30,15 +30,15 @@ The streamer can select which trust level is required to access functionality of
 
 ### Examples
 
-| Command               | Explanation                       |
-| --------------------- | --------------------------------- |
-| !counters             | Lists available counters          |
-| !counters name        | Show value of name counter        |
-| !counters name create | Create name counter if not exists |
-| !counters name +      | Increase counter                  |
-| !counters name -      | Decrease counter                  |
-| !counters name set 20 | Sets the counter to 20            |
-| !counters name delete | Removes the counter               |
+| Command                 | Explanation                       |
+| ----------------------- | --------------------------------- |
+| `!counters`             | Lists available counters          |
+| `!counters name`        | Show value of name counter        |
+| `!counters name create` | Create name counter if not exists |
+| `!counters name +`      | Increase counter                  |
+| `!counters name -`      | Decrease counter                  |
+| `!counters name set 20` | Sets the counter to 20            |
+| `!counters name delete` | Removes the counter               |
 
 ## Random Hero
 
@@ -64,13 +64,15 @@ Items in the Lists are separated by `", "` (a comma followed by a space _without
 
 ### Examples
 
-| Command            | Explanation                              |
-| ------------------ | ---------------------------------------- |
-| !randomhero hots   | Draw a hero from all HotS heros          |
-| !randomhero ow dps | Draw a dps hero from Overwatch           |
-| !randomhero ow fav | Draw a hero from the Overwatchfavourites |
+| Command              | Explanation                              |
+| -------------------- | ---------------------------------------- |
+| `!randomhero hots`   | Draw a hero from all HotS heros          |
+| `!randomhero ow dps` | Draw a dps hero from Overwatch           |
+| `!randomhero ow fav` | Draw a hero from the Overwatchfavourites |
 
 ## Music License Displayer
+
+### License managing
 
 Watches your music player and writes the license corresponding to that song
 to a file which streamlabs/obs can read and display as textbox layer.
@@ -80,9 +82,27 @@ which you can link in your streaming software, then put the path for
 both of these files into the script settings. The script will look for
 the title in that file and write the corresponding three lines to the out file.
 
+### Command
+
+This script can also read the currently played song from the supported
+audio players so that viewers can ask for the song title.
+
+| Command  | Answer                                                |
+| -------- | ----------------------------------------------------- |
+| `!music` | Current song is «Night in Venice» by «Kevin MacLeod». |
+
 ### Supported formats
 
-Supports the license format for incompetech.
+Supports the license format for incompetech, multiple licenses
+assembled in a single text file. Example:
+
+    Night In Venice by Kevin MacLeod
+    Link: https://incompetech.filmmusic.io/song/5763-night-in-venice
+    License: http://creativecommons.org/licenses/by/4.0/
+
+    Study And Relax by Kevin MacLeod
+    Link: https://incompetech.filmmusic.io/song/5764-study-and-relax
+    License: http://creativecommons.org/licenses/by/4.0/
 
 Supported Music players: `Winamp` and `Foobar2000`
 

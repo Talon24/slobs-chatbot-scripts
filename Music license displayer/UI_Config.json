@@ -8,32 +8,60 @@
         "tooltip": "Used music player",
         "group": "General"
     },
+    "license_watching_enabled": {
+       "type": "checkbox",
+       "value": true,
+       "label": "Enable Text file update",
+       "tooltip": "Whether the script should put the license for the current song to a file.",
+       "group": "License handling"
+    },
     "license_file": {
         "type": "textbox",
         "value": "",
         "label": "Path to license file",
         "tooltip": "Write the full path to the file containing the licenses in the incompetech specified format",
-        "group": "General"
+        "group": "License handling"
     },
     "out_file": {
         "type": "textbox",
         "value": "",
         "label": "Path to output file",
         "tooltip": "Path to the File that streamlabs read and is put in as overlay.",
-        "group": "General"
+        "group": "License handling"
     },
     "verbose": {
        "type": "checkbox",
        "value": false,
        "label": "Write status in log",
        "tooltip": "Check if you want messages like 'Now playing X' or 'paused or stopped' appear in the log.",
-       "group": "General"
+       "group": "License handling"
+    },
+    "ask_song_enabled": {
+       "type": "checkbox",
+       "value": true,
+       "label": "Enable chat command",
+       "tooltip": "Whether viewers can ask in chat for current music title.",
+       "group": "Chat Interaction"
+    },
+    "command": {
+        "type": "textbox",
+        "value": "!music",
+        "label": "Command",
+        "tooltip": "Command to ask for current song.",
+        "group": "Chat Interaction"
+    },
+    "message_template": {
+        "type": "textbox",
+        "value": "Now playing «{title}» by «{author}».",
+        "label": "Message template",
+        "tooltip": "Template for the reply. {title} will be replaced with the title and {author} with the interpret/author.",
+        "group": "Chat Interaction"
     },
     "foobar_title": {
         "type": "textbox",
         "value": "[%album artist% - ]['['%album%[ CD%discnumber%][ #%tracknumber%]']' ]%title%[ '//' %track artist%]",
         "label": "Title format string",
         "tooltip": "Format string defined in Foobar to parse the title. Available under `File` -> `Preferences` -> `Display` -> `Default User Interface`. Won't work with functions (yet).",
-        "group": "Foobar"
+        "group": "Foobar specific"
     }
 }
