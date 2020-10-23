@@ -28,7 +28,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.5"
+Version = "1.0.6"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -86,8 +86,12 @@ def Execute(data):
         log("{} asked for calculation: {}".format(username, calculation))
         # Pretty spacing in the calculation
         pretty_calc = re.sub(r" *(\(\)) *", r"\1", calculation)
-        pretty_calc = re.sub(r" *\b([\+\-\*\/<>%\^]|\*\*|//|==|>=|<=|in)\b *",
+        pretty_calc = re.sub(r" *(?<=\b|[()])"  # Start border or bracket
+                             r"([\+\-\*\/<>%\^|&]|\*\*|\/\/|==|>=|<=|in|<<|>>)"
+                             r"(?=\b|[()]) *",  # End border or bracket
                              r" \1 ", pretty_calc)
+        # Previous fixing breaks scientific notation from 5e+2 to 5e + 2
+        # Revert this if it happens
         pretty_calc = re.sub(r" *(\de) ([\+\-]) (\d)",
                              r"\1\2\3", pretty_calc)
         try:
