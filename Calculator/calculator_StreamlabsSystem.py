@@ -28,7 +28,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.4"
+Version = "1.0.5"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -78,7 +78,7 @@ def Execute(data):
     # pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
-    if data.IsChatMessage() and has_command(message):
+    if data.IsChatMessage() and not data.IsWhisper() and has_command(message):
         calculation = strip_command(message)
         if on_cooldown(username):
             return

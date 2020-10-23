@@ -12,7 +12,7 @@ ScriptName = "Multicounter"
 Website = "https://github.com/Talon24"
 Description = "Additional Counters."
 Creator = "Talon24"
-Version = "1.0.3"
+Version = "1.0.4"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -42,7 +42,7 @@ def Execute(data):
     # pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
-    if data.IsChatMessage() and has_command(message):
+    if data.IsChatMessage() and not data.IsWhisper() and has_command(message):
         log("{} has made a request: {}".format(username, message))
         counters = getcounters()
         trust = get_trust(username, data.RawData)

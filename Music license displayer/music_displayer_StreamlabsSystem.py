@@ -18,7 +18,7 @@ ScriptName = "Music License Displayer"
 Website = "https://github.com/Talon24"
 Description = "Edits a file with the license of a currently played incompetech music file."
 Creator = "Talon24"
-Version = "0.9.1"
+Version = "0.9.2"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -58,7 +58,8 @@ def Execute(data):
     #pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
-    if data.IsChatMessage() and has_command(message) and settings["ask_song_enabled"]:
+    if (data.IsChatMessage() and has_command(message) and not data.IsWhisper()
+            and settings["ask_song_enabled"]):
         author, title, status = PLAYER.song_attributes()
         log("{} requested current song".format(username))
         if status not in ["Stopped", "Paused"] and PLAYER.window_title is not None:
