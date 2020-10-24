@@ -14,10 +14,7 @@ The handling of the `^`-operator can be configured.
 ### Requirement
 
 The calculator requires the `simpleeval` module to be installed. This can be done
-via the Script settings. The python path must be specified within the Maintenance
-tab in order for this to work. Simply copy it from the general settings for scripts.
-You can simply copypaste the path that ends with `Lib`. Then hit the
-`Install simpleeval` button.
+in the Script settings under `Maintenance` using the `Install simpleeval` button.
 
 ## Multicounter
 
