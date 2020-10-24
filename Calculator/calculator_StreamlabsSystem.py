@@ -4,6 +4,7 @@
 import os
 import re
 import ast
+import sys
 import json
 import math
 import codecs
@@ -11,6 +12,10 @@ import decimal
 import datetime
 import operator
 import fractions
+
+# Subprocess must know this is a win32 system.
+sys.platform = "win32"
+import subprocess  # pylint: disable=wrong-import-position
 
 try:
     import simpleeval
@@ -23,7 +28,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.3"
+Version = "1.0.6"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -73,7 +78,7 @@ def Execute(data):
     # pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
-    if data.IsChatMessage() and has_command(message):
+    if data.IsChatMessage() and not data.IsWhisper() and has_command(message):
         calculation = strip_command(message)
         if on_cooldown(username):
             return
@@ -81,8 +86,12 @@ def Execute(data):
         log("{} asked for calculation: {}".format(username, calculation))
         # Pretty spacing in the calculation
         pretty_calc = re.sub(r" *(\(\)) *", r"\1", calculation)
-        pretty_calc = re.sub(r" *\b([\+\-\*\/<>%\^]|\*\*|//|==|>=|<=|in)\b *",
+        pretty_calc = re.sub(r" *(?<=\b|[()])"  # Start border or bracket
+                             r"([\+\-\*\/<>%\^|&]|\*\*|\/\/|==|>=|<=|in|<<|>>)"
+                             r"(?=\b|[()]) *",  # End border or bracket
                              r" \1 ", pretty_calc)
+        # Previous fixing breaks scientific notation from 5e+2 to 5e + 2
+        # Revert this if it happens
         pretty_calc = re.sub(r" *(\de) ([\+\-]) (\d)",
                              r"\1\2\3", pretty_calc)
         try:
@@ -229,12 +238,29 @@ def install_simpleeval():
         getpip = json.loads(req)["response"]
         with open(pippath, "w") as file:
             file.write(getpip)
-        output = os.system(" ".join([python_path, pippath]))
-        log("getpip output: {}".format(not bool(output)))
-        log("call: {}".format(" ".join([python_path, "-m", "pip", "install", "simpleeval"])))
+        output = call([python_path, pippath])
+        log("getpip output: {}\n{}\n{}".format(
+            not bool(output[2]), output[0], output[1]))
     # Call pip to install simpleeval
-    output = os.system(" ".join([python_path, "-m", "pip", "install", "simpleeval"]))
-    log("simpleeval install output: {}".format(not bool(output)))
+    command = [python_path, "-m", "pip", "install", "simpleeval"]
+    log("call: {}".format(" ".join(command)))
+    output = call(command)
+    log("simpleeval install output: {}\n{}\n{}".format(
+        not bool(output[2]), output[0], output[1]))
+
+
+def call(command):
+    """Make a commandline call."""
+    pipe = subprocess.PIPE
+    term = subprocess.Popen(command, stdin=pipe, stdout=pipe, stderr=pipe)
+    stdout, stderr = term.communicate(b"")
+    code = term.returncode
+    try:
+        stdout = stdout.decode("utf8")
+        stderr = stderr.decode("utf8")
+    except UnicodeDecodeError:
+        raise UnicodeDecodeError("Can't decode {} or {}".format(stdout, stderr))
+    return stdout, stderr, code
 
 
 def removesuffix(string_, suffix):

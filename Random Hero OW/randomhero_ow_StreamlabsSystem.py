@@ -14,7 +14,7 @@ ScriptName = "Random Hero Selector - Overwatch"
 Website = "https://github.com/Talon24"
 Description = "Draw a random Overwatch hero from all or from a certain Role."
 Creator = "Talon24"
-Version = "1.0.3"
+Version = "1.0.4"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -37,7 +37,7 @@ def Execute(data):
     """Executed on every message received. Named by API."""
     # pylint: disable=invalid-name
     message = data.Message
-    if data.IsChatMessage() and has_command(message):
+    if data.IsChatMessage() and not data.IsWhisper() and has_command(message):
         selection = strip_command(message).lower()
         if not selection:
             all_heroes = settings["tank"] + settings["support"] + settings["dps"]
