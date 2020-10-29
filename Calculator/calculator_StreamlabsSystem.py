@@ -28,7 +28,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.6"
+Version = "1.0.7"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -59,9 +59,9 @@ def Init():
     EVALUATOR.functions["decimal"] = decimal.Decimal
     EVALUATOR.functions["fraction"] = fractions.Fraction
     EVALUATOR.functions["frac"] = fractions.Fraction
-    EVALUATOR.functions["bin"] = bin
-    EVALUATOR.functions["hex"] = hex
-    EVALUATOR.functions["oct"] = oct
+    EVALUATOR.functions["bin"] = mybin
+    EVALUATOR.functions["hex"] = myhex
+    EVALUATOR.functions["oct"] = myoct
     EVALUATOR.functions["round"] = round
     EVALUATOR.functions["deg"] = math.degrees
     EVALUATOR.functions["rad"] = math.radians
@@ -167,6 +167,19 @@ def ndecimal(number):
         return decimal.Decimal((sign, digits + (0,) * exponent, 0))
     else:
         return normalized
+
+
+def mybin(number):
+    """Non-string non-prefix bin() version."""
+    return int("{:0b}".format(number))
+
+def myoct(number):
+    """Non-string non-prefix oct() version."""
+    return int("{:0o}".format(number))
+
+def myhex(number):
+    """Non-prefix hex() function."""
+    return "{:0x}".format(number)
 
 
 class AmbiguouityError(Exception):
