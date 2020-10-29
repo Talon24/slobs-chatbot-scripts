@@ -142,7 +142,7 @@ def format_result(result):
             num, denom = result.numerator, result.denominator
             result = '({:,} / {:,})'.format(num, denom)
         elif isinstance(result, str):
-            if len(result) > settings["max_string_len"]:
+            if len(result) > settings["max_string_len"] or not settings["strings_enabled"]:
                 raise ValueError
         else:
             result = format(ndecimal(result), ",")

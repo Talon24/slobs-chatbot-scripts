@@ -27,13 +27,6 @@
         "tooltip": "Limits how often the command can be called.",
         "group": "General"
     },
-    "max_string_len": {
-        "type": "numberbox",
-        "value": 20,
-        "label": "Maximal length of result if it is a string",
-        "tooltip": "Limit the length of a string result.",
-        "group": "General"
-    },
     "^-behaviour": {
         "type": "dropdown",
         "value": "Bitwise XOR",
@@ -41,6 +34,20 @@
         "items": ["Bitwise XOR", "Power", "Nothing"],
         "tooltip": "Specify how x^y is to be interpreted. Python default is Bitwise XOR, so 2^4=6, though in common writing the ^ denotes power (2^4=16). When set to Nothing, bot displays a hint for clarification.",
         "group": "General"
+    },
+    "strings_enabled": {
+       "type": "checkbox",
+       "value": false,
+       "label": "Allow string outputs",
+       "tooltip": "The bot can process string operations and then output text. This could be used to make the bot say anything within its length limit, like spam, advertisements or prohibited words.",
+       "group": "String Output"
+    },
+    "max_string_len": {
+        "type": "numberbox",
+        "value": 20,
+        "label": "Maximal length of result if it is a string.",
+        "tooltip": "Limit the length of a string result if string output is enabled.",
+        "group": "String Output"
     },
     "pipinstall": {
         "type": "button",
