@@ -6,17 +6,12 @@ It can select from all heroes, from a specific class or from favourites."""
 
 import os
 import re
-import sys
 import json
 import codecs
 import datetime
 import collections
 
 from urllib import urlencode  # pylint: disable=no-name-in-module
-
-# Subprocess must know this is a win32 system.
-sys.platform = "win32"
-import subprocess  # pylint: disable=wrong-import-position
 
 # pylint: disable=invalid-name
 ScriptName = "Translator"
@@ -32,6 +27,7 @@ if False:  # pylint: disable=using-constant-test
 
 
 def requests_get(url, headers=None):
+    """Similar api to requests.get."""
     if not headers:
         headers = {}
     result = Parent.GetRequest(url, headers)
@@ -114,15 +110,15 @@ def wikimedia_api(search, lang="de"):
         "rvprop": "content",
     }
     paramstring = urlencode(params)
-    # log(paramstring)
-    req = requests_get(url.format(lang, paramstring))
+    finished_url = url.format(lang, paramstring)
+    req = requests_get(finished_url)
     # print(json.dumps(req.json()["query"]["pages"], indent=4))
     pages = json.loads(req)["query"]["pages"]
     if len(pages) == 1:
         page = pages.keys()[0]
         # log(json.dumps(json.loads(req, encoding="utf8"), indent=4, ensure_ascii=False))
         text = pages[page]["revisions"][0]["slots"]["main"]["*"]
-        return text
+        return text, finished_url
     else:
         raise KeyError("Url had multiple pages??")
 
@@ -131,12 +127,14 @@ def closest_match(search, lang="de"):
     """Query the search function"""
     # url = ("https://{}.wiktionary.org/w/api.php?action=opensearch&"
     #        "format=json&formatversion=2&search={}&namespace=0&limit=1")
-    url = "https://{}.wiktionary.org/w/api.php?action=opensearch&".format("en")
+    url = "https://{}.wiktionary.org/w/api.php?".format(lang)
     params = urlencode({
         "action": "opensearch",
         "format": "json",
         "version": 2,
+        # "search": quote(search.encode("utf8")),
         "search": search,
+        # "search": "Wärmflasche".encode("utf8"),
         "namespace": 0,
         "limit": 1
     })
@@ -151,51 +149,85 @@ def closest_match(search, lang="de"):
 def from_de(search, lang="en"):
     """Translate with german as source language."""
     # url = r"https://de.wiktionary.org/wiki/"
-    wikitext = wikimedia_api(search, "de")
+    wikitext, _url = wikimedia_api(search, "de")
     translations = parse_wikipedia_de(wikitext, lang)
     text = " --- ".join([", ".join(x) for x in translations])
-    if len(text) > 510:
-        position = text[:513].rfind("---")
+    if len(text) > 450:
+        position = text[:453].rfind("---")
         text = text[:position]
+
     return text
 
 
 def from_en(search, lang="de"):
     """Translate with english as source language."""
-    wikitext = wikimedia_api(search, "en")
+    wikitext, url = wikimedia_api(search, "en")
     # log(wikitext)
-    translations = parse_wikipedia_en(wikitext, lang=lang)
+    translations = parse_wikipedia_en(wikitext, url, lang=lang)
     text = " --- ".join(["%s: %s" % (key, ", ".join(val))
                          for key, val in translations.items()])
-    if len(text) > 510:
-        position = text[:513].rfind("---")
+    if len(text) > 450:
+        position = text[:453].rfind("---")
         text = text[:position]
     return text
 
 
-def parse_wikipedia_en(page, lang="de"):
+def parse_wikipedia_en(page, url, lang="de"):
     """Parse the translation tables from wikipedia."""
     page = re.sub(r"\\u00([0-0a-f]{2})", r"\\x\1", page)
-    sections = re.findall(r"={4,5}Translations={4,5}\n([\w\W]*?)\n==", page)
+    sections = re.findall(r"={4,5}Translations={4,5}\n([\w\W]*?)(?:(?:==)|$)", page)
     out = collections.OrderedDict()
     for section in sections:
-        trans_tables = re.findall(r"(\{\{trans-top[\w\W]*?\{\{trans-bottom\}\})", section)
-        for trans in trans_tables:
-            category = re.search(r"\{\{trans-top\|(.*?)\}\}", trans).group(1)
-            # {{t+|de|Vogel|m}}
-            translations = re.findall(r"\{\{(?:t\+?\|)?%s\|(.*?)(?:\|\w+)?\}\}" % (lang), trans)
-            if translations:
-                out[category] = translations
+        if not "see translation subpage" in section:
+            trans_tables = re.findall(r"(\{\{trans-top[\w\W]*?\{\{trans-bottom\}\})", section)
+            for trans in trans_tables:
+                category = re.search(r"\{\{trans-top\|(.*?)\}\}", trans).group(1)
+                # {{t+|de|Vogel|m}}
+                translations = re.findall(r"\{\{(?:t.*?\|)?%s\|([^|}]*).*?\}\}" % (lang), trans)
+                if translations:
+                    out[category] = translations
+        else:
+            reference = re.search(r"\{\{see translation subpage\|(.+?)\}\}",
+                                  section).group(1)
+            subpage_data = parse_translation_subpage_en(url, reference, lang)
+            out.update(subpage_data)
     # log(out)
     return out
+
+
+def parse_translation_subpage_en(url, reference, lang="de"):
+    """Read data from the translation subpage."""
+    out = collections.OrderedDict()
+    injected_url = re.sub(r"titles=(.*?)(?=&|$)",
+                          r"titles=\1/translations",
+                          url)
+    req = requests_get(injected_url)
+    # log(injected_url)
+    pages = json.loads(req)["query"]["pages"]
+    page = pages.keys()[0]
+    subpage = pages[page]["revisions"][0]["slots"]["main"]["*"]
+    # log(subpage)
+    log(reference)
+    section = re.search(r"===%s===[^=]([\w\W]*?)(?:[^=]===[^=]|$)" % reference, subpage).group(1)
+    trans_tables = re.findall(r"(\{\{trans-top[\w\W]*?\{\{trans-bottom\}\})", section)
+    for trans in trans_tables:
+        category = re.search(r"\{\{trans-top\|(.*?)\}\}", trans).group(1)
+        # {{t+|de|Vogel|m}}
+        translations = re.findall(r"\{\{(?:t.*?\|)?%s\|([^|}]*).*?\}\}" % (lang), trans)
+        if translations:
+            out[category] = translations
+    return out
+
 
 
 def parse_wikipedia_de(page, lang="en"):
     """Parse the translation tables from wikipedia."""
     page = re.sub(r"\\u00([0-0a-f]{2})", r"\\x\1", page)
-    translations = re.findall(r"==== \{\{Übersetzungen\}\} ====\n([\w\W]*?)\n==", page)
+    # translations = re.findall(r"==== \{\{Übersetzungen\}\} ====\n([\w\W]*?)\n(?:(?:==)|$)", page)
+    translations = re.findall(r"==== \{\{Übersetzungen\}\} ====([\w\W]*?)(?:(?:==)|$)", page)
     out = []
-    log(len(translations))
+    # log(page)
+    log("Translations: {}".format(translations))
     for trans in translations:
         # {{Ü|en|lorry}}
         translations = re.findall(r"\{\{Ü\|%s\|(.*?)\}\}" % (lang), trans)
