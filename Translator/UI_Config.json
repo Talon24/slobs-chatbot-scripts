@@ -1,0 +1,10 @@
+{
+    "output_file": "settings.json",
+    "command": {
+        "type": "textbox",
+        "value": "!translate",
+        "label": "Command to trigger script",
+        "tooltip": "Amazing!",
+        "group": "General"
+    }
+}
