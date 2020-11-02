@@ -1,7 +1,5 @@
 # -*- coding: utf8 -*-
-"""Script for the streamlabs chatbot to select a random Overwatch hero.
-
-It can select from all heroes, from a specific class or from favourites."""
+"""Script Which allows to ask for translations from the wiktionary."""
 # pylint: disable=invalid-name
 
 import os
@@ -52,17 +50,21 @@ def Execute(data):
             send_message("Command: {} <source language> <target language> <text>"
                          "".format(settings["command"]))
             return
-        source, target, text = selection.split(" ", maxsplit=2)
+        try:
+            source, target, text = selection.split(" ", maxsplit=2)
+        except ValueError:
+            return
+        out = ""
         log("{} requested translation of {} from {} to {}".format(
             data.User, text, source, target))
         if source == "de":
-            message = from_de(text, lang=target)
+            out = from_de(text, lang=target)
         elif source == "en":
-            message = from_en(text, lang=target)
+            out = from_en(text, lang=target)
         else:
             return
-        if message:
-            send_message(message)
+        if out:
+            send_message(out)
 
 
 def Tick():
@@ -201,7 +203,7 @@ def parse_wikipedia_de(page, lang="en"):
     for trans in translations:
         # {{Ü|en|lorry}}
         translations = re.findall(r"\{\{Ü\|%s\|(.*?)\}\}" % (lang), trans)
-        if translations:
+        if translations and translations != [""]:
             out.append(translations)
     return out
 
