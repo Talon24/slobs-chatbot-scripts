@@ -32,8 +32,6 @@ def requests_get(url, headers=None):
         headers = {}
     result = Parent.GetRequest(url, headers)
     text = json.loads(result).get("response")
-    # log(json.loads(result).keys())
-    # log(json.loads(result).get("status"))
     return text
 
 
@@ -42,17 +40,6 @@ def Init():
     # pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = getjson("settings.json")
-
-    # wikitext = wikimedia_api("bird", "en")
-    # # log(text)
-    # translations = parse_wikipedia_en(wikitext)
-    # text = " --- ".join(["%s: %s" % (key, ", ".join(val))
-    #                      for key, val in translations.items()])
-    # if len(text) > 510:
-    #     position = text[:513].rfind("---")
-    #     text = text[:position]
-    # log(text)
-
 
 
 def Execute(data):
@@ -65,11 +52,13 @@ def Execute(data):
             send_message("Command: {} <source language> <target language> <text>"
                          "".format(settings["command"]))
             return
-        source, target, data = selection.split(" ", maxsplit=2)
+        source, target, text = selection.split(" ", maxsplit=2)
+        log("{} requested translation of {} from {} to {}".format(
+            data.User, text, source, target))
         if source == "de":
-            message = from_de(data, lang=target)
+            message = from_de(text, lang=target)
         elif source == "en":
-            message = from_en(data, lang=target)
+            message = from_en(text, lang=target)
         else:
             return
         if message:
@@ -97,10 +86,8 @@ def remove_dups(list_):
 
 def wikimedia_api(search, lang="de"):
     """main."""
-    # url = r"https://en.wikipedia.org/w/api.php
     url = r"https://{}.wiktionary.org/w/api.php?{}"
     firstmatch = closest_match(search, lang=lang)
-    # log(firstmatch)
     params = {
         "action": "query",
         "format": "json",
@@ -112,11 +99,10 @@ def wikimedia_api(search, lang="de"):
     paramstring = urlencode(params)
     finished_url = url.format(lang, paramstring)
     req = requests_get(finished_url)
-    # print(json.dumps(req.json()["query"]["pages"], indent=4))
+    # log(json.dumps(req.json()["query"]["pages"], indent=4))
     pages = json.loads(req)["query"]["pages"]
     if len(pages) == 1:
         page = pages.keys()[0]
-        # log(json.dumps(json.loads(req, encoding="utf8"), indent=4, ensure_ascii=False))
         text = pages[page]["revisions"][0]["slots"]["main"]["*"]
         return text, finished_url
     else:
@@ -125,44 +111,35 @@ def wikimedia_api(search, lang="de"):
 
 def closest_match(search, lang="de"):
     """Query the search function"""
-    # url = ("https://{}.wiktionary.org/w/api.php?action=opensearch&"
-    #        "format=json&formatversion=2&search={}&namespace=0&limit=1")
     url = "https://{}.wiktionary.org/w/api.php?".format(lang)
     params = urlencode({
         "action": "opensearch",
         "format": "json",
         "version": 2,
-        # "search": quote(search.encode("utf8")),
         "search": search,
-        # "search": "Wärmflasche".encode("utf8"),
         "namespace": 0,
         "limit": 1
     })
     url = url + params
     req = requests_get(url)
-    # real_url = json.loads(req)[3][0]  # Wiki page url
-    # log(json.dumps(json.loads(req), indent=4, ensure_ascii=False))
     firstmatch = json.loads(req)[1][0]
     return firstmatch
 
 
 def from_de(search, lang="en"):
     """Translate with german as source language."""
-    # url = r"https://de.wiktionary.org/wiki/"
     wikitext, _url = wikimedia_api(search, "de")
     translations = parse_wikipedia_de(wikitext, lang)
     text = " --- ".join([", ".join(x) for x in translations])
     if len(text) > 450:
         position = text[:453].rfind("---")
         text = text[:position]
-
     return text
 
 
 def from_en(search, lang="de"):
     """Translate with english as source language."""
     wikitext, url = wikimedia_api(search, "en")
-    # log(wikitext)
     translations = parse_wikipedia_en(wikitext, url, lang=lang)
     text = " --- ".join(["%s: %s" % (key, ", ".join(val))
                          for key, val in translations.items()])
@@ -191,7 +168,6 @@ def parse_wikipedia_en(page, url, lang="de"):
                                   section).group(1)
             subpage_data = parse_translation_subpage_en(url, reference, lang)
             out.update(subpage_data)
-    # log(out)
     return out
 
 
@@ -202,12 +178,9 @@ def parse_translation_subpage_en(url, reference, lang="de"):
                           r"titles=\1/translations",
                           url)
     req = requests_get(injected_url)
-    # log(injected_url)
     pages = json.loads(req)["query"]["pages"]
     page = pages.keys()[0]
     subpage = pages[page]["revisions"][0]["slots"]["main"]["*"]
-    # log(subpage)
-    log(reference)
     section = re.search(r"===%s===[^=]([\w\W]*?)(?:[^=]===[^=]|$)" % reference, subpage).group(1)
     trans_tables = re.findall(r"(\{\{trans-top[\w\W]*?\{\{trans-bottom\}\})", section)
     for trans in trans_tables:
@@ -223,17 +196,13 @@ def parse_translation_subpage_en(url, reference, lang="de"):
 def parse_wikipedia_de(page, lang="en"):
     """Parse the translation tables from wikipedia."""
     page = re.sub(r"\\u00([0-0a-f]{2})", r"\\x\1", page)
-    # translations = re.findall(r"==== \{\{Übersetzungen\}\} ====\n([\w\W]*?)\n(?:(?:==)|$)", page)
     translations = re.findall(r"==== \{\{Übersetzungen\}\} ====([\w\W]*?)(?:(?:==)|$)", page)
     out = []
-    # log(page)
-    log("Translations: {}".format(translations))
     for trans in translations:
         # {{Ü|en|lorry}}
         translations = re.findall(r"\{\{Ü\|%s\|(.*?)\}\}" % (lang), trans)
         if translations:
             out.append(translations)
-    # log(out)
     return out
 
 
@@ -256,14 +225,6 @@ def getjson(filename):
     with codecs.open(os.path.join(work_dir, filename), encoding="utf-8-sig") as file:
         result = json.load(file, encoding="utf-8-sig")
     return result
-
-
-def mychoice(iterable):
-    """Alternative to random.choice, in case Parent's random is different."""
-    max_ = len(iterable)
-    if max_ == 0:
-        raise IndexError("Cannot select from empty list.")
-    return iterable[Parent.GetRandom(0, max_)]
 
 
 def has_command(message):
