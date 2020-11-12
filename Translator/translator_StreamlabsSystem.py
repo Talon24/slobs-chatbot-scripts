@@ -16,7 +16,7 @@ ScriptName = "Translator"
 Website = "https://github.com/Talon24"
 Description = "Translator using the Wiktionary."
 Creator = "Talon24"
-Version = "0.9.0"
+Version = "0.9.1"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -87,7 +87,7 @@ def remove_dups(list_):
 
 
 def wikimedia_api(search, lang="de"):
-    """main."""
+    """Get best matching wikipedia page for a search term."""
     url = r"https://{}.wiktionary.org/w/api.php?{}"
     firstmatch = closest_match(search, lang=lang)
     params = {
@@ -112,7 +112,7 @@ def wikimedia_api(search, lang="de"):
 
 
 def closest_match(search, lang="de"):
-    """Query the search function"""
+    """Query the search function on wikipedia and get first result."""
     url = "https://{}.wiktionary.org/w/api.php?".format(lang)
     params = urlencode({
         "action": "opensearch",
@@ -157,7 +157,7 @@ def parse_wikipedia_en(page, url, lang="de"):
     sections = re.findall(r"={4,5}Translations={4,5}\n([\w\W]*?)(?:(?:==)|$)", page)
     out = collections.OrderedDict()
     for section in sections:
-        if not "see translation subpage" in section:
+        if "see translation subpage" not in section:
             trans_tables = re.findall(r"(\{\{trans-top[\w\W]*?\{\{trans-bottom\}\})", section)
             for trans in trans_tables:
                 category = re.search(r"\{\{trans-top\|(.*?)\}\}", trans).group(1)
@@ -192,7 +192,6 @@ def parse_translation_subpage_en(url, reference, lang="de"):
         if translations:
             out[category] = translations
     return out
-
 
 
 def parse_wikipedia_de(page, lang="en"):

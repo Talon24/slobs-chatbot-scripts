@@ -129,7 +129,7 @@ def ReloadSettings(_jsonData):
 
 
 def format_result(result):
-    """Formatting on the result of the calculation."""
+    """Format the result of the calculation."""
     if result is not True and result is not False:
         # Python2 appears to not format corrent with its, Decimal fixes this
         decimal.getcontext().prec = int(settings["max_precision"])
@@ -150,11 +150,11 @@ def format_result(result):
 
 
 def ndecimal(number):
-    """Normalized Decimal of given number that avoids scientific notation."""
+    """Normalize Decimal of given number so it avoids scientific notation."""
     try:
         normalized = decimal.Decimal(number).normalize()
     except TypeError:
-        raise SyntaxError("Phython 2.7.13 is being sheet and can't normalize"+
+        raise SyntaxError("Phython 2.7.13 is being sheet and can't normalize."
                           " Maybe max_precision is set as a float?")
     sign, digits, exponent = normalized.as_tuple()
     if exponent < 0:
@@ -162,7 +162,7 @@ def ndecimal(number):
         if cutoff == 0:
             return decimal.Decimal((sign, digits, exponent))
         else:
-            return decimal.Decimal((sign, digits[:-cutoff], exponent-cutoff))
+            return decimal.Decimal((sign, digits[:-cutoff], exponent - cutoff))
     elif 0 <= exponent < decimal.getcontext().prec:
         return decimal.Decimal((sign, digits + (0,) * exponent, 0))
     else:
@@ -173,9 +173,11 @@ def mybin(number):
     """Non-string non-prefix bin() version."""
     return int("{:0b}".format(number))
 
+
 def myoct(number):
     """Non-string non-prefix oct() version."""
     return int("{:0o}".format(number))
+
 
 def myhex(number):
     """Non-prefix hex() function."""
@@ -193,7 +195,7 @@ def no_power(*_):
 
 
 def safe_lshift(self, other):
-    """lshift that avoids too large numbers."""
+    """Version of lshift that avoids too large numbers."""
     if other <= 2000:
         return self << other
     else:
@@ -236,7 +238,6 @@ def install_simpleeval():
 
     Subprocess uses module that is only on linux, so fallback to os.
     """
-
     # Build paths
     pippath = os.path.join(os.path.dirname(__file__), "getpip.py")
     os_path = os.__file__
