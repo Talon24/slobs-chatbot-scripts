@@ -18,7 +18,7 @@ ScriptName = "Music License Displayer"
 Website = "https://github.com/Talon24"
 Description = "Edits a file with the license of a currently played incompetech music file."
 Creator = "Talon24"
-Version = "1.0.0"
+Version = "1.0.1"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -83,7 +83,7 @@ def Tick():
                 text = find_license(title)
                 if settings["verbose"]:
                     log("Now displaying {} by {}.".format(title, author))
-                if text == "":
+                if text == "" and settings["warnings"]:
                     log("=" * 20 + " No license found for song {} by {} !".format(
                         title, author
                     ))

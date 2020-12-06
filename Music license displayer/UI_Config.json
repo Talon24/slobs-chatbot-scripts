@@ -32,8 +32,15 @@
     "verbose": {
        "type": "checkbox",
        "value": false,
-       "label": "Write status in log",
+       "label": "Write play/pause status to log",
        "tooltip": "Check if you want messages like 'Now playing X' or 'paused or stopped' appear in the log.",
+       "group": "License handling"
+    },
+    "warnings": {
+       "type": "checkbox",
+       "value": true,
+       "label": "Write warnings of unknown songs to log",
+       "tooltip": "If the song metadata cannot matched to a license, show a warning.",
        "group": "License handling"
     },
     "ask_song_enabled": {
