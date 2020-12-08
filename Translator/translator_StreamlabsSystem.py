@@ -49,6 +49,10 @@ def Init():
     global settings
     settings = getjson("settings.json")
     settings["bad_words"] = settings["bad_words"].split(", ")
+    try:
+        settings["bad_words"].remove("")
+    except ValueError:
+        pass
 
 
 def Execute(data):

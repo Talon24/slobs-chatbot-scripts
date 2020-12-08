@@ -58,6 +58,10 @@ def Init():
         return
     settings["last_call"] = 0
     settings["bad_words"] = settings["bad_words"].split(", ")
+    try:
+        settings["bad_words"].remove("")
+    except ValueError:
+        pass
     if settings["^-behaviour"] == "Bitwise XOR":
         EVALUATOR.operators[ast.BitXor] = operator.xor
     elif settings["^-behaviour"] == "Power":
