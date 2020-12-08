@@ -56,5 +56,12 @@
         "wsevent": "",
         "tooltip": "Install the package installer and use it to install simpleeval. NOTE: This launches terminals. If it does not, check the debug pane.",
         "group": "Maintenance"
+    },
+    "bad_words": {
+        "type": "textbox",
+        "value": "",
+        "label": "Bad words, separated by ', '",
+        "tooltip": "List of bad words that should not be printed by the bot. The words are separated by ', ' (That is a comma and a space).",
+        "group": "Blocklist"
     }
 }

@@ -6,5 +6,12 @@
         "label": "Command to trigger script",
         "tooltip": "Amazing!",
         "group": "General"
+    },
+    "bad_words": {
+        "type": "textbox",
+        "value": "",
+        "label": "Bad words, separated by ', '",
+        "tooltip": "List of bad words that should not be printed by the bot. The words are separated by ', ' (That is a comma and a space).",
+        "group": "Blocklist"
     }
 }

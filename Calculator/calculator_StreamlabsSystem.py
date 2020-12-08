@@ -12,6 +12,7 @@ import decimal
 import datetime
 import operator
 import fractions
+import itertools
 
 # Subprocess must know this is a win32 system.
 sys.platform = "win32"
@@ -23,12 +24,23 @@ try:
 except ImportError:
     simpleeval = ImportError
 
+
+# LuisSanchezDev magic to get blacklisted words requirement
+# pylint: disable=import-error, wrong-import-position
+import clr
+import System
+clr.AddReference([asbly for asbly in System.AppDomain.CurrentDomain.GetAssemblies()
+                  if "AnkhBotR2" in str(asbly)][0])
+import AnkhBotR2
+# pylint: enable=import-error, wrong-import-position
+
+
 # pylint: disable=invalid-name
 ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.7"
+Version = "1.0.8"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -45,6 +57,7 @@ def Init():
         log("Simlpeeval not installed. Install it via settings!")
         return
     settings["last_call"] = 0
+    settings["bad_words"] = settings["bad_words"].split(", ")
     if settings["^-behaviour"] == "Bitwise XOR":
         EVALUATOR.operators[ast.BitXor] = operator.xor
     elif settings["^-behaviour"] == "Power":
@@ -144,6 +157,11 @@ def format_result(result):
         elif isinstance(result, str):
             if len(result) > settings["max_string_len"] or not settings["strings_enabled"]:
                 raise ValueError
+            for word in itertools.chain(settings["bad_words"], get_words_blacklist()):
+                if word.lower() in result.lower():
+                    log("Offensive word '{}' found in output:\n{}"
+                        "".format(word, result))
+                    raise ValueError
         else:
             result = format(ndecimal(result), ",")
     return result
@@ -293,3 +311,18 @@ def on_cooldown(user):
 def set_cooldown(user):
     """Shortcut: Set the cooldown of a user."""
     Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["timeout"]))
+
+
+def get_words_blacklist():
+    """LuisSanchezDev magic to get blacklisted words.
+
+    List items have the following properties:
+        - Duration
+        - Punishment
+        - Word
+    """
+    g_manager = AnkhBotR2.Managers.GlobalManager.Instance
+    words = g_manager.VMLocator.WordView.Words
+    # return list(words)  # Convert to list to make a copy of the ObservableCollection
+    only_words = {word.Word for word in words}
+    return only_words

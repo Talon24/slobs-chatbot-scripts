@@ -7,16 +7,26 @@ import re
 import json
 import codecs
 import datetime
+import itertools
 import collections
 
 from urllib import urlencode  # pylint: disable=no-name-in-module
+
+# LuisSanchezDev magic to get blacklisted words requirement
+# pylint: disable=import-error, wrong-import-position
+import clr
+import System
+clr.AddReference([asbly for asbly in System.AppDomain.CurrentDomain.GetAssemblies()
+                  if "AnkhBotR2" in str(asbly)][0])
+import AnkhBotR2
+# pylint: enable=import-error, wrong-import-position
 
 # pylint: disable=invalid-name
 ScriptName = "Translator"
 Website = "https://github.com/Talon24"
 Description = "Translator using the Wiktionary."
 Creator = "Talon24"
-Version = "0.9.1"
+Version = "0.9.2"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -38,6 +48,7 @@ def Init():
     # pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = getjson("settings.json")
+    settings["bad_words"] = settings["bad_words"].split(", ")
 
 
 def Execute(data):
@@ -64,7 +75,14 @@ def Execute(data):
         else:
             return
         if out:
-            send_message(out)
+            for word in itertools.chain(settings["bad_words"],
+                                        get_words_blacklist()):
+                if word.lower() in out.lower():
+                    log("Offensive word '{}' found in output:\n{}"
+                        "".format(word, out))
+                    break
+            else:
+                send_message(out)
 
 
 def Tick():
@@ -236,3 +254,18 @@ def has_command(message):
 def strip_command(message):
     """Retrieve message content without the command."""
     return message.replace(settings.get("command"), "", 1).strip()
+
+
+def get_words_blacklist():
+    """LuisSanchezDev magic to get blacklisted words.
+
+    List items have the following properties:
+        - Duration
+        - Punishment
+        - Word
+    """
+    g_manager = AnkhBotR2.Managers.GlobalManager.Instance
+    words = g_manager.VMLocator.WordView.Words
+    # return list(words)  # Convert to list to make a copy of the ObservableCollection
+    only_words = {word.Word for word in words}
+    return only_words
