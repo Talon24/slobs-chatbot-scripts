@@ -40,7 +40,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.8"
+Version = "1.0.9"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -314,7 +314,7 @@ def on_cooldown(user):
 
 def set_cooldown(user):
     """Shortcut: Set the cooldown of a user."""
-    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["timeout"]))
+    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["cooldown"]))
 
 
 def get_words_blacklist():
