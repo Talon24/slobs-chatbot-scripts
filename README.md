@@ -118,3 +118,46 @@ Supported Music players: `Winamp` and `Foobar2000`
     `Logs`-Page (The (i)-Button in the top-right corner) in the `Scripts`-tab.
 -   I observed that it can sometimes take up to 10 seconds until an Update
     from Winamp is recognized.
+
+## Translator
+
+This script checks the Wiktionary page for a word to retrieve translations.
+
+Syntax:
+
+    !translate <from_language> <to_language> <Word>
+
+Example:
+
+    User: !translate en de lamppost
+    Bot: pole that holds up a light: Laternenpfahl
+
+Supported source languages:
+
+-   English
+-   German
+
+Source languages may work even if not supported, as the wiktionary often
+has pages for words in other languages.
+
+Language codes as used on the wiktionary are used to identify languages.
+
+This relies on the search function of wiktionary, so it may not always be correct.
+Also be aware that a user might ask for a translation of a banned word in a different language.
+You can specify bad words, if the output contains one of these, it won't send the message.
+The banned words specified in the Mod Tools tab of the Chatbot will be included.
+
+## Viewbot Hunter
+
+Gets the list of known Stream-watching bots from [Twitch Insights](https://twitchinsights.net/bots).
+Requires a webdriver for your corresponding Browser. Supported are Firefox, Chrome and PhantomJS.
+The Webdriver file (ending with `.exe`) must be saved to the directory of the Viewbot Hunter.
+There's a button to open the directory in the script settings under Maintenance.
+
+Downloads:
+
+| Browser   | Webdriver Download                                           | Comment                                                                   |
+| --------- | ------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Firefox   | [Download](https://github.com/mozilla/geckodriver/releases/) |                                                                           |
+| Chrome    | [Download](https://chromedriver.chromium.org/downloads)      |                                                                           |
+| PhantomJS | [Download](https://phantomjs.org/download.html)              | PhantomJS can work without having a browser installed, but is less stable |

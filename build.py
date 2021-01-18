@@ -6,7 +6,6 @@ import json
 import zipfile
 import pathlib
 
-EXCLUDEDIRS = ["build", ".git", ".github"]
 
 
 def main():
@@ -80,7 +79,7 @@ def get_version(file_path):
 def zip_content(folder, myzip):
     """Zip the content of the module."""
     for file in folder.iterdir():
-        if file.suffix == ".py" or file.name == "UI_Config.json":
+        if file.suffix in (".py", ".txt") or file.name == "UI_Config.json":
             myzip.write(file)
             print("In {} this was added: {}".format(myzip.filename, file.name))
 

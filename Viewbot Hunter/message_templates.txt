@@ -1,0 +1,6 @@
+That's a suspicious name, {}... Begone, bot!
+This {}-guy is a bot :O
+Removing {} for being a bot.
+We cannot have viewbots here, {}!
+rm -rf {}
+{} failed to proove they're human.
