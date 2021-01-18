@@ -40,7 +40,7 @@ ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.9"
+Version = "1.0.10"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -54,7 +54,8 @@ def Init():
     global settings
     settings = get_json("settings.json")
     if simpleeval == ImportError:
-        log("Simlpeeval not installed. Install it via settings!")
+        log("Simlpeeval not installed. Install it via settings or refresh "
+            "the scripts if you did that already!")
         return
     settings["last_call"] = 0
     settings["bad_words"] = settings["bad_words"].split(", ")
@@ -111,6 +112,10 @@ def Execute(data):
         # Revert this if it happens
         pretty_calc = re.sub(r" *(\de) ([\+\-]) (\d)",
                              r"\1\2\3", pretty_calc)
+        if simpleeval == ImportError:
+            log("Simlpeeval not installed. Install it via settings or refresh "
+                "the scripts if you did that already!")
+            return
         try:
             result = EVALUATOR.eval(calculation)
         except ZeroDivisionError:
