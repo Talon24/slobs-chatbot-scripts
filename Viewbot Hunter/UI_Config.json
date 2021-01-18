@@ -1,0 +1,83 @@
+{
+    "output_file": "settings.json",
+    "browser": {
+        "type": "dropdown",
+        "value": "Firefox",
+        "label": "Used Browser",
+        "items": ["Firefox", "Chrome", "PhantomJS"],
+        "tooltip": "Browser driver to use. Chrome/Firefox needs to be installed, PhantomJS can work standalone, but less stable.",
+        "group": "General"
+    },
+    "cooldown_botcheck": {
+        "type": "slider",
+        "value": 10,
+        "min": 1,
+        "max": 300,
+        "ticks": 1,
+        "label": "Delay between bot checks.",
+        "tooltip": "Set the delay between bot checks.",
+        "group": "General"
+    },
+    "cooldown_update": {
+        "type": "slider",
+        "value": 120,
+        "min": 30,
+        "max": 600,
+        "ticks": 10,
+        "label": "Delay between botlist updates, if automatic",
+        "tooltip": "Set the delay between botlist updates.",
+        "group": "General"
+    },
+    "automatic_update": {
+       "type": "checkbox",
+       "value": false,
+       "label": "Automatic Botlist update",
+       "tooltip": "Activate to automatically update the botlist.",
+       "group": "General"
+    },
+    "safe_mode": {
+       "type": "checkbox",
+       "value": true,
+       "label": "Safe mode, doesn't ban by itself",
+       "tooltip": "To make sure your own bot is not banned or just to make sure.",
+       "group": "General"
+    },
+    "write_message": {
+       "type": "checkbox",
+       "value": true,
+       "label": "Write a message when a bot is spotted.",
+       "tooltip": "Disable to silently handle bots.",
+       "group": "General"
+    },
+    "manual_update": {
+        "type": "button",
+        "label": "Update Botlist",
+        "function": "update_botlist",
+        "wsevent": "",
+        "tooltip": "Manually update the botlist.",
+        "group": "General"
+    },
+    "allowlist": {
+        "type": "textbox",
+        "value": "nightbot, moobot, streamlabs",
+        "label": "Allowed bots, separated by ', '",
+        "tooltip": "List of allowed bots. The names are separated by ', ' (That is a comma and a space).",
+        "group": "General"
+    },
+    "pipinstall": {
+        "type": "button",
+        "label": "Install selenium",
+        "function": "install_selenium",
+        "wsevent": "",
+        "tooltip": "Install the package installer and use it to install selenium. NOTE: This launches terminals. If it does not, check the debug pane.",
+        "group": "Maintenance"
+    },
+    "open_explorer": {
+        "type": "button",
+        "label": "Open Script Folder",
+        "function": "open_explorer",
+        "wsevent": "",
+        "tooltip": "Open the script folder in Windows explorer. Here, the webdrivers need to be saved and also the file of Comments resides.",
+        "group": "Maintenance"
+    }
+}

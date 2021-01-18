@@ -1,5 +1,5 @@
 """Write currently played track to a file. Only Winamp so far."""
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 
 import os
 import re
@@ -13,12 +13,12 @@ import datetime
 sys.platform = "win32"
 import subprocess  # pylint: disable=wrong-import-position
 
-#pylint: disable=invalid-name
+# pylint: disable=invalid-name
 ScriptName = "Music License Displayer"
 Website = "https://github.com/Talon24"
 Description = "Edits a file with the license of a currently played incompetech music file."
 Creator = "Talon24"
-Version = "0.9.2"
+Version = "1.0.1"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -28,11 +28,11 @@ if False:  # pylint: disable=using-constant-test
 
 def Init():
     """Called on start of bot. Named by API."""
-    #pylint: disable=invalid-name, global-variable-undefined
+    # pylint: disable=invalid-name, global-variable-undefined
     global settings
     settings = get_json("settings.json")
     settings["last_tick"] = datetime.datetime(2000, 1, 1)
-    global PLAYER  #pylint: disable=global-statement
+    global PLAYER  # pylint: disable=global-statement
     if settings["player"] == "Winamp":
         PLAYER = Winamp()
     elif settings["player"] == "Foobar":
@@ -55,21 +55,20 @@ def ReloadSettings(_jsonData):
 
 def Execute(data):
     """Executed on every message received. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     username = data.UserName
     message = data.Message
     if (data.IsChatMessage() and has_command(message) and not data.IsWhisper()
-            and settings["ask_song_enabled"]):
+            and settings["ask_song_enabled"] and settings["ready"]):
         author, title, status = PLAYER.song_attributes()
         log("{} requested current song".format(username))
         if status not in ["Stopped", "Paused"] and PLAYER.window_title is not None:
             send_message(settings["message_template"].format(title=title, author=author))
 
 
-
 def Tick():
     """Executed in a time interval. Named by API."""
-    #pylint: disable=invalid-name
+    # pylint: disable=invalid-name
     if not settings["ready"]:
         return
     if datetime.datetime.now() - settings["last_tick"] >= datetime.timedelta(seconds=1):
@@ -84,7 +83,7 @@ def Tick():
                 text = find_license(title)
                 if settings["verbose"]:
                     log("Now displaying {} by {}.".format(title, author))
-                if text == "":
+                if text == "" and settings["warnings"]:
                     log("=" * 20 + " No license found for song {} by {} !".format(
                         title, author
                     ))
@@ -100,14 +99,15 @@ def get_title(application="winamp"):
     This is an alternative to the ctypes function which uses EnumWindows.
     If it was working, that should be preferred. Unfortuantely, that
     seems to not work from within the chatbot. If there is a way to make that
-    work, this can and probably should be removed. Subprocess appears to not """
-
+    work, this can and probably should be removed.
+    """
     filters = {"winamp": "imagename eq winamp.exe",
                "foobar": "imagename eq foobar2000.exe"}
     command = ["tasklist", "/fi", filters[application],
                "/v", "/fo", "list"]
     # result = os.popen(command).read()
     pipe = subprocess.PIPE
+    # This flag stops the subprocess terminal to pop up
     detached_process = 0x00000008
     # no_window_flag = 0x08000000
     term = subprocess.Popen(command, stdin=pipe, stdout=pipe, stderr=pipe,
@@ -149,6 +149,7 @@ def get_titles_ctypes():
 
 class Winamp():
     """Reader for winamp."""
+
     def __init__(self):
         self.song = None
         self.attributes = None
@@ -157,16 +158,17 @@ class Winamp():
 
     def read_window_title(self):
         """Find the winamp window title."""
-        # window_titles = get_titles()
+        # window_titles = get_titles_ctypes()
         # try:
         #     winamp = [title for title in window_titles
         #               if re.match(r".* Winamp(?: \[.+\])?", title)][0]
         # except IndexError:
+        #     # Winamp did not write the title back
         #     winamp = None
         winamp = get_title("winamp")
-            # Winamp did not write the title back
         self.previous_title = self.window_title
         if not winamp == "Notifier":
+            # Window name is "Notifier" if it didn't refresh yet
             self.window_title = winamp
 
     def song_attributes(self):
@@ -191,7 +193,8 @@ class Winamp():
 
 
 class Foobar2000():
-    """Reader for Foobar2000. NOT IMPLEMENTED YET"""
+    """Reader for Foobar2000."""
+
     def __init__(self, title_template):
         self.song = None
         self.attributes = None
@@ -201,7 +204,7 @@ class Foobar2000():
 
     def read_window_title(self):
         """Find the foobar window title."""
-        # window_titles = get_titles()
+        # window_titles = get_titles_ctypes()
         # try:
         #     foobar = [title for title in window_titles
         #               if title.endswith("[foobar2000]")
@@ -216,8 +219,8 @@ class Foobar2000():
         """Pattern tanslation.
 
         Converts the foobar title build string into a regex that extracts
-        the relevant fields from the built title."""
-
+        the relevant fields from the built title.
+        """
         # Place capture groups for watched tags, just match others.
         for tag in re.findall("%.+?%", pattern):
             if tag == r"%title%":
@@ -243,10 +246,10 @@ class Foobar2000():
             prev = pattern
             pattern = re.sub(r"\[([^\[\]]+)\]", r"(?:\1)?", pattern)
 
-        # Excape forwardslashes
+        # Escape forwardslashes
         pattern = re.sub(r"([\/])", r"\\\1", pattern)
 
-        # append foobar name to the end of the title
+        # Append foobar name to the end of the title
         pattern += r"  \[foobar2000\]"
 
         # Force the pattern to match from the beginning to the end
@@ -261,7 +264,7 @@ class Foobar2000():
                 return None, None, "Stopped"
             author = match.group("artist")
             title = match.group("title")
-            status = None  # Apparently foobar does not publish this
+            status = None  # Need an if in minilanguage to get status
             return author, title, status
         except TypeError:
             return None, None, None

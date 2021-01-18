@@ -12,6 +12,7 @@ import decimal
 import datetime
 import operator
 import fractions
+import itertools
 
 # Subprocess must know this is a win32 system.
 sys.platform = "win32"
@@ -23,12 +24,23 @@ try:
 except ImportError:
     simpleeval = ImportError
 
+
+# LuisSanchezDev magic to get blacklisted words requirement
+# pylint: disable=import-error, wrong-import-position
+import clr
+import System
+clr.AddReference([asbly for asbly in System.AppDomain.CurrentDomain.GetAssemblies()
+                  if "AnkhBotR2" in str(asbly)][0])
+import AnkhBotR2
+# pylint: enable=import-error, wrong-import-position
+
+
 # pylint: disable=invalid-name
 ScriptName = "Calculator"
 Website = "https://github.com/Talon24"
 Description = "Allow the bot to solve calculations. Requires simpleeval."
 Creator = "Talon24"
-Version = "1.0.6"
+Version = "1.0.10"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -42,9 +54,15 @@ def Init():
     global settings
     settings = get_json("settings.json")
     if simpleeval == ImportError:
-        log("Simlpeeval not installed. Install it via settings!")
+        log("Simlpeeval not installed. Install it via settings or refresh "
+            "the scripts if you did that already!")
         return
     settings["last_call"] = 0
+    settings["bad_words"] = settings["bad_words"].split(", ")
+    try:
+        settings["bad_words"].remove("")
+    except ValueError:
+        pass
     if settings["^-behaviour"] == "Bitwise XOR":
         EVALUATOR.operators[ast.BitXor] = operator.xor
     elif settings["^-behaviour"] == "Power":
@@ -59,9 +77,9 @@ def Init():
     EVALUATOR.functions["decimal"] = decimal.Decimal
     EVALUATOR.functions["fraction"] = fractions.Fraction
     EVALUATOR.functions["frac"] = fractions.Fraction
-    EVALUATOR.functions["bin"] = bin
-    EVALUATOR.functions["hex"] = hex
-    EVALUATOR.functions["oct"] = oct
+    EVALUATOR.functions["bin"] = mybin
+    EVALUATOR.functions["hex"] = myhex
+    EVALUATOR.functions["oct"] = myoct
     EVALUATOR.functions["round"] = round
     EVALUATOR.functions["deg"] = math.degrees
     EVALUATOR.functions["rad"] = math.radians
@@ -94,6 +112,10 @@ def Execute(data):
         # Revert this if it happens
         pretty_calc = re.sub(r" *(\de) ([\+\-]) (\d)",
                              r"\1\2\3", pretty_calc)
+        if simpleeval == ImportError:
+            log("Simlpeeval not installed. Install it via settings or refresh "
+                "the scripts if you did that already!")
+            return
         try:
             result = EVALUATOR.eval(calculation)
         except ZeroDivisionError:
@@ -129,7 +151,7 @@ def ReloadSettings(_jsonData):
 
 
 def format_result(result):
-    """Formatting on the result of the calculation."""
+    """Format the result of the calculation."""
     if result is not True and result is not False:
         # Python2 appears to not format corrent with its, Decimal fixes this
         decimal.getcontext().prec = int(settings["max_precision"])
@@ -142,19 +164,24 @@ def format_result(result):
             num, denom = result.numerator, result.denominator
             result = '({:,} / {:,})'.format(num, denom)
         elif isinstance(result, str):
-            if len(result) > settings["max_string_len"]:
+            if len(result) > settings["max_string_len"] or not settings["strings_enabled"]:
                 raise ValueError
+            for word in itertools.chain(settings["bad_words"], get_words_blacklist()):
+                if word.lower() in result.lower():
+                    log("Offensive word '{}' found in output:\n{}"
+                        "".format(word, result))
+                    raise ValueError
         else:
             result = format(ndecimal(result), ",")
     return result
 
 
 def ndecimal(number):
-    """Normalized Decimal of given number that avoids scientific notation."""
+    """Normalize Decimal of given number so it avoids scientific notation."""
     try:
         normalized = decimal.Decimal(number).normalize()
     except TypeError:
-        raise SyntaxError("Phython 2.7.13 is being sheet and can't normalize"+
+        raise SyntaxError("Phython 2.7.13 is being sheet and can't normalize."
                           " Maybe max_precision is set as a float?")
     sign, digits, exponent = normalized.as_tuple()
     if exponent < 0:
@@ -162,11 +189,26 @@ def ndecimal(number):
         if cutoff == 0:
             return decimal.Decimal((sign, digits, exponent))
         else:
-            return decimal.Decimal((sign, digits[:-cutoff], exponent-cutoff))
+            return decimal.Decimal((sign, digits[:-cutoff], exponent - cutoff))
     elif 0 <= exponent < decimal.getcontext().prec:
         return decimal.Decimal((sign, digits + (0,) * exponent, 0))
     else:
         return normalized
+
+
+def mybin(number):
+    """Non-string non-prefix bin() version."""
+    return int("{:0b}".format(number))
+
+
+def myoct(number):
+    """Non-string non-prefix oct() version."""
+    return int("{:0o}".format(number))
+
+
+def myhex(number):
+    """Non-prefix hex() function."""
+    return "{:0x}".format(number)
 
 
 class AmbiguouityError(Exception):
@@ -180,7 +222,7 @@ def no_power(*_):
 
 
 def safe_lshift(self, other):
-    """lshift that avoids too large numbers."""
+    """Version of lshift that avoids too large numbers."""
     if other <= 2000:
         return self << other
     else:
@@ -223,7 +265,6 @@ def install_simpleeval():
 
     Subprocess uses module that is only on linux, so fallback to os.
     """
-
     # Build paths
     pippath = os.path.join(os.path.dirname(__file__), "getpip.py")
     os_path = os.__file__
@@ -278,4 +319,19 @@ def on_cooldown(user):
 
 def set_cooldown(user):
     """Shortcut: Set the cooldown of a user."""
-    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["timeout"]))
+    Parent.AddUserCooldown(ScriptName, settings["command"], user, int(settings["cooldown"]))
+
+
+def get_words_blacklist():
+    """LuisSanchezDev magic to get blacklisted words.
+
+    List items have the following properties:
+        - Duration
+        - Punishment
+        - Word
+    """
+    g_manager = AnkhBotR2.Managers.GlobalManager.Instance
+    words = g_manager.VMLocator.WordView.Words
+    # return list(words)  # Convert to list to make a copy of the ObservableCollection
+    only_words = {word.Word for word in words}
+    return only_words

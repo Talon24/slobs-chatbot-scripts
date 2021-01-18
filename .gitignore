@@ -136,3 +136,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# viewbot hunter:
+## web drivers
+geckodriver.exe
+chromedriver.exe
+phantomjs.exe
+## serializations
+bots.json
+banned.json
