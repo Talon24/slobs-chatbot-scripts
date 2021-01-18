@@ -72,7 +72,7 @@ def Tick():
                     selected = random_choice(templates)
                     send_message(selected.format(bot))
                 if not SETTINGS["safe_mode"]:
-                    send_message("PROTECTED /ban {}".format(bot))
+                    send_message("/ban {}".format(bot))
         serialize_bannedlist()
 
 
