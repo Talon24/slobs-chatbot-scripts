@@ -72,6 +72,22 @@
         "tooltip": "Install the package installer and use it to install selenium. NOTE: This launches terminals. If it does not, check the debug pane.",
         "group": "Maintenance"
     },
+    "selfcheck": {
+        "type": "button",
+        "label": "Self check",
+        "function": "self_check",
+        "wsevent": "",
+        "tooltip": "Check if everything is set up correctly, write that to the log.",
+        "group": "Maintenance"
+    },
+    "open_templates": {
+        "type": "button",
+        "label": "Open Message Templates",
+        "function": "open_templates",
+        "wsevent": "",
+        "tooltip": "Open and edit the message templates.",
+        "group": "Maintenance"
+    },
     "open_explorer": {
         "type": "button",
         "label": "Open Script Folder",
