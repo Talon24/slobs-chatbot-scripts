@@ -7,6 +7,7 @@ import json
 import time
 import codecs
 import datetime
+import traceback
 
 # Subprocess must know this is a win32 system.
 sys.platform = "win32"
@@ -17,7 +18,7 @@ ScriptName = "Viewbot Hunter"
 Website = "https://github.com/Talon24"
 Description = "Check for bots and block them"
 Creator = "Talon24"
-Version = "0.9.2"
+Version = "0.9.3"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -101,13 +102,6 @@ def ReloadSettings(_jsonData):
     Init()
 
 
-def Unload():
-    """Called when script is disabled."""
-    # pylint: disable=invalid-name
-    serialize_botlist()
-    serialize_bannedlist()
-
-
 def send_message(message):
     """Shortcut for twitch message sender."""
     message = str(message)
@@ -136,8 +130,14 @@ def deserialize_botlist():
         with codecs.open(os.path.join(work_dir, "bots.json"), encoding="utf-8-sig") as file:
             result = json.load(file, encoding="utf-8-sig")
         BOTS.update(result)
-    except IOError:
+    except IOError:  # File is not there
         pass
+    except ValueError:  # json.JSONDecodeError:  # python2 doesn't know this
+        now = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        os.rename(os.path.join(work_dir, "bots.json"),
+                  os.path.join(work_dir, "bots-backup-{}.json".format(now)))
+        log("bots.json is not a valid json file, a new one will be started.")
+        log(traceback.format_exc())
 
 
 def serialize_botlist():
@@ -154,8 +154,14 @@ def deserialize_bannedlist():
         with codecs.open(os.path.join(work_dir, "banned.json"), encoding="utf-8-sig") as file:
             result = json.load(file, encoding="utf-8-sig")
         BANNED.update(result)
-    except IOError:
+    except IOError:  # File is not there
         pass
+    except ValueError:  # json.JSONDecodeError:  # python2 doesn't know this
+        now = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+        os.rename(os.path.join(work_dir, "banned.json"),
+                  os.path.join(work_dir, "banned-backup-{}.json".format(now)))
+        log("banned.json is not a valid json file, a new one will be started.")
+        log(traceback.format_exc())
 
 
 def serialize_bannedlist():
