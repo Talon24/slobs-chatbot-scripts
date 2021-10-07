@@ -2,6 +2,7 @@
 # pylint: disable=invalid-name
 
 import os
+import re
 import sys
 import json
 import time
@@ -18,7 +19,7 @@ ScriptName = "Viewbot Hunter"
 Website = "https://github.com/Talon24"
 Description = "Check for bots and block them"
 Creator = "Talon24"
-Version = "0.9.3"
+Version = "0.9.4"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -36,14 +37,53 @@ def Init():
     # pylint: disable=invalid-name
     SETTINGS.update(get_json("settings.json"))
     SETTINGS["allowlist"] = SETTINGS["allowlist"].split(", ")
+    SETTINGS["mods"] = SETTINGS["mods"].split(", ")
     deserialize_botlist()
     deserialize_bannedlist()
 
 
-def Execute(_data):
+def Execute(data):
     """Executed on every message received. Named by API."""
     # pylint: disable=invalid-name
-    return
+    username = data.UserName
+    message = data.Message
+    if (data.IsChatMessage() and not data.IsWhisper()
+            and has_command(message) and trusted_user(username)):
+        log("User {} has requested {}".format(username, message))
+        command = strip_command(message)
+        words = command.split()
+        chat_command(words)
+
+
+def chat_command(words):
+    """Parse and follow chat command."""
+    if len(words) == 1:
+        function = words[0]
+        if function.lower() == "update":
+            update_botlist()
+            send_message("Finished update")
+        elif function.lower() == "info":
+            text = "Known bots: {} (updated {}) - Banned bots: {} (updated {})"
+            last_bot_update = file_modified_time("bots.json")
+            last_banned_update = file_modified_time("banned.json")
+            text = text.format(len(BOTS), last_bot_update,
+                               len(BANNED), last_banned_update)
+            send_message(text)
+    elif len(words) == 2:
+        function = words[0]
+        target = words[1]
+        if function.lower() == "lookup":
+            text = "{target} is in botlist: {known}; is banned: {banned}"
+            send_message(text.format(target=target,
+                                     known=target in BOTS,
+                                     banned=target in BANNED))
+
+
+def file_modified_time(file):
+    """Last Modified timestamp of a file."""
+    timestamp = os.stat(add_absname(file)).st_mtime
+    date = datetime.datetime.fromtimestamp(timestamp)
+    return date.strftime("%Y-%m-%d %H:%M:%S")
 
 
 def Tick():
@@ -117,66 +157,60 @@ def log(message):
 
 def get_json(filename):
     """Read a json file."""
-    work_dir = os.path.dirname(__file__)
-    with codecs.open(os.path.join(work_dir, filename), encoding="utf-8-sig") as file:
+    with codecs.open(add_absname(filename), encoding="utf-8-sig") as file:
         result = json.load(file, encoding="utf-8-sig")
     return result
 
 
 def deserialize_botlist():
     """Load the list of previously known bots."""
-    work_dir = os.path.dirname(__file__)
     try:
-        with codecs.open(os.path.join(work_dir, "bots.json"), encoding="utf-8-sig") as file:
+        with codecs.open(add_absname("bots.json"), encoding="utf-8-sig") as file:
             result = json.load(file, encoding="utf-8-sig")
         BOTS.update(result)
     except IOError:  # File is not there
         pass
     except ValueError:  # json.JSONDecodeError:  # python2 doesn't know this
         now = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-        os.rename(os.path.join(work_dir, "bots.json"),
-                  os.path.join(work_dir, "bots-backup-{}.json".format(now)))
+        os.rename(add_absname("bots.json"),
+                  add_absname("bots-backup-{}.json".format(now)))
         log("bots.json is not a valid json file, a new one will be started.")
         log(traceback.format_exc())
 
 
 def serialize_botlist():
     """Save the known bots to a file."""
-    work_dir = os.path.dirname(__file__)
-    with codecs.open(os.path.join(work_dir, "bots.json"), "w", encoding="utf-8-sig") as file:
+    with codecs.open(add_absname("bots.json"), "w", encoding="utf-8-sig") as file:
         json.dump(list(BOTS), file, encoding="utf-8-sig", indent=4)
 
 
 def deserialize_bannedlist():
     """Read a json file."""
-    work_dir = os.path.dirname(__file__)
     try:
-        with codecs.open(os.path.join(work_dir, "banned.json"), encoding="utf-8-sig") as file:
+        with codecs.open(add_absname("banned.json"), encoding="utf-8-sig") as file:
             result = json.load(file, encoding="utf-8-sig")
         BANNED.update(result)
     except IOError:  # File is not there
         pass
     except ValueError:  # json.JSONDecodeError:  # python2 doesn't know this
         now = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
-        os.rename(os.path.join(work_dir, "banned.json"),
-                  os.path.join(work_dir, "banned-backup-{}.json".format(now)))
+        os.rename(add_absname("banned.json"),
+                  add_absname("banned-backup-{}.json".format(now)))
         log("banned.json is not a valid json file, a new one will be started.")
         log(traceback.format_exc())
 
 
 def serialize_bannedlist():
     """Read a json file."""
-    work_dir = os.path.dirname(__file__)
-    with codecs.open(os.path.join(work_dir, "banned.json"), "w", encoding="utf-8-sig") as file:
+    with codecs.open(add_absname("banned.json"), "w", encoding="utf-8-sig") as file:
         json.dump(list(BANNED), file, encoding="utf-8-sig", indent=4)
 
 
 def get_templates():
     """Open The file of message templates."""
     default_line = ["That's a suspicious name, {}... Begone, bot!"]
-    work_dir = os.path.dirname(__file__)
     try:
-        with codecs.open(os.path.join(work_dir, "message_templates.txt"),
+        with codecs.open(add_absname("message_templates.txt"),
                          encoding="utf-8-sig") as file:
             data = file.read()
     except IOError:
@@ -207,7 +241,7 @@ def install_selenium():
         import pip  # pylint: disable=import-outside-toplevel, unused-import
         log("Pip is installed.")
     except ImportError:
-        pippath = os.path.join(os.path.dirname(__file__), "getpip.py")
+        pippath = add_absname("getpip.py")
         req = Parent.GetRequest("https://bootstrap.pypa.io/get-pip.py", {})
         getpip = json.loads(req)["response"]
         with open(pippath, "w") as file:
@@ -287,7 +321,7 @@ def open_explorer():
 
 def open_templates():
     """Open the windows explorer at the scripts directory."""
-    file = os.path.join(os.path.dirname(__file__), "message_templates.txt")
+    file = add_absname("message_templates.txt")
     call([r"notepad.exe", file], hidden=True, waiting=False)
 
 
@@ -358,3 +392,18 @@ def set_cooldown(command, seconds):
         if index > 500:  # stop waiting after 5 seconds
             log("Timer of {} seconds was set, but never got flushed.".format(seconds))
             break
+
+
+def has_command(message):
+    """Check if the message begins with a command as its own word."""
+    return re.search(r"^{}\b".format(re.escape(SETTINGS.get("command"))), message)
+
+
+def strip_command(message):
+    """Retrieve message content without the command."""
+    return message.replace(SETTINGS.get("command"), "", 1).strip()
+
+
+def trusted_user(username):
+    """Check if a username is in the list of chat controllers."""
+    return username in SETTINGS["mods"]
