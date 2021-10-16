@@ -5,8 +5,6 @@ name: Main-CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
 on:
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -25,14 +23,3 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build the Projects to zip files
         run: python3 build.py
-
-      - name: Automatic Releases
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Release"
-          files: |
-            LICENSE.txt
-            build/*.zip
