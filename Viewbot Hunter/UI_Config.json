@@ -64,6 +64,20 @@
         "tooltip": "List of allowed bots. The names are separated by ', ' (That is a comma and a space).",
         "group": "General"
     },
+    "command": {
+        "type": "textbox",
+        "value": "!viewbothunter",
+        "label": "Command for information or update requests.",
+        "tooltip": "Amazing!",
+        "group": "Chat control"
+    },
+    "mods": {
+        "type": "textbox",
+        "value": "",
+        "label": "List of Custom Mods, separated by ', '",
+        "tooltip": "List of usernames permitted to access control commands.",
+        "group": "Chat control"
+    },
     "pipinstall": {
         "type": "button",
         "label": "Install selenium",
