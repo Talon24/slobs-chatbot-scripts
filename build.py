@@ -6,7 +6,7 @@ import json
 import zipfile
 import pathlib
 
-EXCLUDEDIRS = ["build", ".git", ".github"]
+EXCLUDEDIRS = ["build", ".git", ".github", ".idea"]
 
 
 def main():
