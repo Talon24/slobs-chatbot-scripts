@@ -7,6 +7,7 @@ import sys
 import json
 import time
 import codecs
+import shutil
 import datetime
 import traceback
 
@@ -19,7 +20,7 @@ ScriptName = "Viewbot Hunter"
 Website = "https://github.com/Talon24"
 Description = "Check for bots and block them"
 Creator = "Talon24"
-Version = "0.9.4"
+Version = "0.9.5"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -40,6 +41,10 @@ def Init():
     SETTINGS["mods"] = SETTINGS["mods"].split(", ")
     deserialize_botlist()
     deserialize_bannedlist()
+    if not os.path.exists(add_absname("message_templates.txt")):
+        shutil.copy(add_absname("message_templates_example.txt"),
+                    add_absname("message_templates.txt"))
+        log("Message template file has been generated from example file.")
 
 
 def Execute(data):
@@ -60,8 +65,11 @@ def chat_command(words):
     if len(words) == 1:
         function = words[0]
         if function.lower() == "update":
-            update_botlist()
-            send_message("Finished update")
+            success = update_botlist()
+            if success:
+                send_message("Finished update")
+            else:
+                send_message("Something wrent wrong in the update.")
         elif function.lower() == "info":
             text = "Known bots: {} (updated {}) - Banned bots: {} (updated {})"
             last_bot_update = file_modified_time("bots.json")

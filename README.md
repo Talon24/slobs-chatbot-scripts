@@ -161,3 +161,15 @@ Downloads:
 | Firefox   | [Download](https://github.com/mozilla/geckodriver/releases/) |                                                                           |
 | Chrome    | [Download](https://chromedriver.chromium.org/downloads)      |                                                                           |
 | PhantomJS | [Download](https://phantomjs.org/download.html)              | PhantomJS can work without having a browser installed, but is less stable |
+
+
+This script can give information and can update its botlist with a chat command, but the users that are allowed have to be listed explicitly.
+Allowed commands:
+
+- `!viewbothunter info` -- Amount of banned, known bots, and update times.
+- `!viewbothunter update` -- Update the botlist.
+- `!viewbothunter lookup [username]` -- check whether a user is a known bot and already banned.
+
+Custom ban message templates can be added in the file `message_templates.txt`.
+This file will be generated from `message_templates_example.txt`.
+**DO NOT** edit this file, as it will be overwritten by script updates.
