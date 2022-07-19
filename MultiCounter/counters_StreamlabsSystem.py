@@ -12,7 +12,7 @@ ScriptName = "Multicounter"
 Website = "https://github.com/Talon24"
 Description = "Additional Counters."
 Creator = "Talon24"
-Version = "1.0.5"
+Version = "1.0.6"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -35,6 +35,8 @@ def Init():
     settings = get_json("settings.json")
     settings["admins"] = settings["admins"].split(", ")
     settings["mods"] = settings["mods"].split(", ")
+    if Parent.GetChannelName().lower() == "api error":
+        log("Couldn't load name of the channel, is the chatbot up to date?")
 
 
 def Execute(data):
@@ -69,7 +71,7 @@ def ReloadSettings(_jsonData):
 def get_trust(user, rawdata):
     """Look up the trust level for a user."""
     data_fields = parse_rawdata(rawdata)
-    if user in settings["admins"]:
+    if user in settings["admins"] or user.lower() == Parent.GetChannelName().lower():
         trust = TRUST["Admin"]
     elif user in settings["mods"]:
         trust = TRUST["Custom Mod"]

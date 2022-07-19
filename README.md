@@ -20,22 +20,22 @@ in the Script settings under `Maintenance` using the `Install simpleeval` button
 
 Create different individual counters.
 
-    !counters[ <countername>[ +|-|<crate>|<delete>|<set <Number to set>>]]
+    !counter[ <countername>[ +|-|create|delete|set <Number to set>]]
 
 Command for the Multicounter must precede the counter name, thus avoiding command conflicts.
 The streamer can select which trust level is required to access functionality of the counters.
 
 ### Examples
 
-| Command                 | Explanation                       |
-| ----------------------- | --------------------------------- |
-| `!counters`             | Lists available counters          |
-| `!counters name`        | Show value of name counter        |
-| `!counters name create` | Create name counter if not exists |
-| `!counters name +`      | Increase counter                  |
-| `!counters name -`      | Decrease counter                  |
-| `!counters name set 20` | Sets the counter to 20            |
-| `!counters name delete` | Removes the counter               |
+| Command                | Explanation                       |
+| ---------------------- | --------------------------------- |
+| `!counter`             | Lists available counters          |
+| `!counter name`        | Show value of name counter        |
+| `!counter name create` | Create name counter if not exists |
+| `!counter name +`      | Increase counter                  |
+| `!counter name -`      | Decrease counter                  |
+| `!counter name set 20` | Sets the counter to 20            |
+| `!counter name delete` | Removes the counter               |
 
 ## Random Hero
 
