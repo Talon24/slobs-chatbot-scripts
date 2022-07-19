@@ -146,3 +146,4 @@ phantomjs.exe
 ## serializations
 bots.json
 banned.json
+message_templates.txt
