@@ -20,7 +20,7 @@ ScriptName = "Viewbot Hunter"
 Website = "https://github.com/Talon24"
 Description = "Check for bots and block them"
 Creator = "Talon24"
-Version = "0.9.5"
+Version = "0.9.6"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -89,9 +89,10 @@ def chat_command(words):
 
 def file_modified_time(file):
     """Last Modified timestamp of a file."""
-    timestamp = os.stat(add_absname(file)).st_mtime
-    date = datetime.datetime.fromtimestamp(timestamp)
-    return date.strftime("%Y-%m-%d %H:%M:%S")
+    if os.path.exists(add_absname(file)):
+        timestamp = os.stat(add_absname(file)).st_mtime
+        date = datetime.datetime.fromtimestamp(timestamp)
+        return date.strftime("%Y-%m-%d %H:%M:%S")
 
 
 def Tick():
