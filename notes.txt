@@ -1,15 +1,97 @@
 Fields in the message object passed to Execute():
-GetParam
-GetParamCount
+GetParam                    <--- get a word by index (int, 1-based)
+GetParamCount               <--- number of words in message
 IsChatMessage
 IsFromDiscord
 IsFromMixer
 IsFromTwitch
 IsFromYoutube
-IsRawData
+IsRawData                   <--- True on twitch ping events
 IsWhisper
 Message
-RawData
-Service
-User
-UserName
+RawData                     <--- see below
+Service                     <--- Name of platform, e.g. "Twitch"
+User                        <--- "raw" name in lower case
+UserName                    <--- Display Name, with upper and lower case
+
+
+RawData:
+[@[key=value;]* ]?:[user!user@channel.]?tmi.twitch.tv TYPE #user :message
+https://dev.twitch.tv/docs/irc/tags
+TYPEs:
+USERSTATE
+PRIVMSG   <--- Message in chat
+WHISPER   <--- Message in private chat
+keys:
+badges        e.g. premium/1
+color         hex value
+display-name  UserName
+emotes        [id:start-end[,start-end]*][/id:start-end[,start-end]*]*
+              with numerical id, char indices
+message-id
+thread-id
+turbo         int
+user-id       int
+user-type
+
+
+Parent Methods:
+AddCooldown
+AddPoints
+AddPointsAll
+AddPointsAllAsync
+AddUserCooldown
+BroadcastWsEvent
+DeleteRequest               <--- Web connection DELETE
+GetActiveUsers
+GetChannelName              <--- Display Name, with upper and lower case
+GetCooldownDuration
+GetCurrencyName
+GetCurrencyUsers
+GetDisplayName              <--- user to UserName
+GetDisplayNames             <--- takes List[str], idk how to use
+GetGwTierLevel
+GetHours
+GetHoursAll
+GetNowPlaying
+GetOBSMute
+GetOBSSpecialSources
+GetOBSVolume
+GetPoints
+GetPointsAll
+GetQueue
+GetRandom
+GetRandomActiveUser
+GetRank
+GetRanksAll
+GetRequest                  <--- Web connection GET
+GetSongPlaylist
+GetSongQueue
+GetStreamingService
+GetTopCurrency
+GetTopHours
+GetUserCooldownDuration
+GetViewerList
+HasPermission
+IsLive
+IsOnCooldown
+IsOnUserCooldown
+Log
+PlaySound
+PostRequest                 <--- Web connection POST
+PutRequest                  <--- Web connection PUT
+RemovePoints
+RemovePointsAll
+RemovePointsAllAsync
+SendDiscordDM
+SendDiscordMessage
+SendStreamMessage
+SendStreamWhisper
+SendTwitchMessage
+SendTwitchWhisper
+SetOBSCurrentScene
+SetOBSMute
+SetOBSSourceRender
+SetOBSVolume
+StopOBSStreaming
+ToggleOBSMute
