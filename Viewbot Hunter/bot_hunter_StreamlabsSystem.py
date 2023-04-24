@@ -20,7 +20,7 @@ ScriptName = "Viewbot Hunter"
 Website = "https://github.com/Talon24"
 Description = "Check for bots and block them"
 Creator = "Talon24"
-Version = "0.9.6"
+Version = "0.9.7"
 
 # Have pylint know the parent variable
 if False:  # pylint: disable=using-constant-test
@@ -37,8 +37,8 @@ def Init():
     """Called on start of bot. Named by API."""
     # pylint: disable=invalid-name
     SETTINGS.update(get_json("settings.json"))
-    SETTINGS["allowlist"] = SETTINGS["allowlist"].split(", ")
-    SETTINGS["mods"] = SETTINGS["mods"].split(", ")
+    SETTINGS["allowlist"] = SETTINGS["allowlist"].lower().split(", ")
+    SETTINGS["mods"] = SETTINGS["mods"].lower().split(", ")
     deserialize_botlist()
     deserialize_bannedlist()
     if not os.path.exists(add_absname("message_templates.txt")):
@@ -83,8 +83,8 @@ def chat_command(words):
         if function.lower() == "lookup":
             text = "{target} is in botlist: {known}; is banned: {banned}"
             send_message(text.format(target=target,
-                                     known=target in BOTS,
-                                     banned=target in BANNED))
+                                     known=target.lower() in BOTS,
+                                     banned=target.lower() in BANNED))
 
 
 def file_modified_time(file):
@@ -106,7 +106,7 @@ def Tick():
         viewers = Parent.GetViewerList()
         # log("Viewers: {}".format(viewers))
         set_cooldown("search bots", SETTINGS["cooldown_botcheck"])
-        viewers = set(viewers)
+        viewers = set(name.lower() for name in viewers)
         non_allowlisted = viewers.difference(SETTINGS["allowlist"])
         bots = BOTS.intersection(non_allowlisted)
         # Don't consider bots that are already banned, probably viewerlist
@@ -117,7 +117,7 @@ def Tick():
             log(bots)
             templates = get_templates()
             for bot in bots:
-                BANNED.add(bot)
+                BANNED.add(bot.lower())
                 if SETTINGS["write_message"]:
                     selected = random_choice(templates)
                     send_message(selected.format(bot))
@@ -129,6 +129,7 @@ def Tick():
 def update_botlist():
     """Manual update button starts this."""
     command = [add_absname("get_botlist.py"), SETTINGS["browser"].lower()]
+    log("Starting botlist update")
     result = call_python(command, hidden=True)
     stdout, stderr, code = result
     if stderr:
@@ -140,8 +141,11 @@ def update_botlist():
                 "stdout {}, stderr {}, code {}".format(stdout, stderr, code))
         return False
     else:
-        BOTS.update(json.loads(stdout))
+        botnum = len(BOTS)
+        BOTS.update(name.lower() for name in json.loads(stdout))
         serialize_botlist()
+        new_botnum = len(BOTS) - botnum
+        log("Added {} bot name(s) to the list.".format(new_botnum))
         return True
 
 
@@ -176,7 +180,7 @@ def deserialize_botlist():
     try:
         with codecs.open(add_absname("bots.json"), encoding="utf-8-sig") as file:
             result = json.load(file, encoding="utf-8-sig")
-        BOTS.update(result)
+        BOTS.update(name for name in result)
     except IOError:  # File is not there
         pass
     except ValueError:  # json.JSONDecodeError:  # python2 doesn't know this
@@ -198,7 +202,7 @@ def deserialize_bannedlist():
     try:
         with codecs.open(add_absname("banned.json"), encoding="utf-8-sig") as file:
             result = json.load(file, encoding="utf-8-sig")
-        BANNED.update(result)
+        BANNED.update(name.lower() for name in result)
     except IOError:  # File is not there
         pass
     except ValueError:  # json.JSONDecodeError:  # python2 doesn't know this
@@ -415,4 +419,4 @@ def strip_command(message):
 
 def trusted_user(username):
     """Check if a username is in the list of chat controllers."""
-    return username in SETTINGS["mods"]
+    return username.lower() in SETTINGS["mods"] or username.lower() == Parent.GetChannelName()
