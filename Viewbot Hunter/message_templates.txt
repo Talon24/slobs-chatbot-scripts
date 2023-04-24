@@ -1,8 +1,0 @@
-# The "{}" will be replaced with the bot name that is banned.
-# Lines starting with a "#" will be ignored
-That's a suspicious name, {}... Begone, bot!
-This {}-guy is a bot :O
-Removing {} for being a bot.
-We cannot have viewbots here, {}!
-rm -rf {}  # bots get banned
-{} failed to proove they're human.
